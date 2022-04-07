@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test name="tools" type="package">
+  <objective>Necessary tools testing</objective>
+  <notes/>
+  <iter result="PASSED">
+    <notes/>
+    <test name="prologue" type="script">
+      <objective/>
+      <notes/>
+      <iter result="PASSED">
+        <arg name="env"/>
+        <notes/>
+      </iter>
+    </test>
+    <test name="ssh_client" type="script">
+    <objective>
+        Establish and check SSH connection between ssh client and
+        ssh server (sshd) using `true` comand
+    </objective>
+      <iter result="PASSED">
+        <arg name="env"/>
+        <arg name="server"/>
+        <notes/>
+      </iter>
+    </test>
+  </iter>
+</test>
