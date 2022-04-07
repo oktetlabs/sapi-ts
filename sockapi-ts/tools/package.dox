@@ -1,0 +1,17 @@
+/**
+
+@defgroup tools Tools testing
+
+@ingroup sockapi
+@{
+
+Test suite to verify functioning of tools and utilities.
+
+@par Tests:
+
+-# @ref tools-prologue
+-# @ref tools-ssh_client
+
+@}tools
+
+*/

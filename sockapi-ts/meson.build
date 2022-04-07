@@ -150,6 +150,7 @@ packages = [
     'sockopts',
     'tcp',
     'timestamps',
+    'tools',
     'udp',
     'usecases',
 ]
