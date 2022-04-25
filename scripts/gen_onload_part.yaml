@@ -24,20 +24,24 @@ parts:
 - [ip4_testing2]
 - [ip4_testing3]
 - [ip4_testing4]
-- [ip6_testing1]
+#
+# All IPv6 parts are disabled until there is a good reason to test it.
+#
+#- [ip6_testing1]
 - [ip4_testing5]
 - [ip4_testing6]
 - [ip4_testing7]
 - [ip4_testing8]
-- [ip6_testing2]
+#- [ip6_testing2]
 - [ip4_testing9]
 - [ip4_testing10]
 - [ip4_testing11]
-- [transparent, cache_testing, cache_testing_ip6]
-- [ip6_testing3]
-- [ip6_testing4]
-- [ip6_testing5]
-- [ip6_testing6]
+#- [transparent, cache_testing, cache_testing_ip6]
+- [transparent, cache_testing]
+#- [ip6_testing3]
+#- [ip6_testing4]
+#- [ip6_testing5]
+#- [ip6_testing6]
 - [bpf_testing, cong_testing]
 slices:
   bpf_testing:
@@ -48,10 +52,10 @@ slices:
     ools: [socket_cache]
     packages: [tcp, level5/fd_caching]
     reqs: [FD_CACHING, '!IP6_ONLOAD']
-  cache_testing_ip6:
-    ools: [socket_cache, build_cloud]
-    packages: [tcp, level5/fd_caching]
-    reqs: [FD_CACHING, 'IP6_ONLOAD']
+#  cache_testing_ip6:
+#    ools: [socket_cache, build_cloud]
+#    packages: [tcp, level5/fd_caching]
+#    reqs: [FD_CACHING, 'IP6_ONLOAD']
   cong_testing:
     ools: []
     packages: [congestion]
@@ -108,31 +112,31 @@ slices:
     ools: []
     packages: [usecases, bnbvalue, sendrecv, sendfile]
     reqs: ['!IP6_ONLOAD']
-  ip6_testing1:
-    ools: [build_cloud]
-    packages: [route, usecases, bnbvalue, udp]
-    reqs: [IP6, IP6_ONLOAD]
-  ip6_testing2:
-    ools: [build_cloud]
-    packages: [tcp]
-    reqs: [IP6, IP6_ONLOAD, '!TCP_SUBPART']
-  ip6_testing6:
-    ools: [build_cloud]
-    packages: [tcp]
-    reqs: [IP6, IP6_ONLOAD, TCP_SUBPART]
-  ip6_testing3:
-    ools: [build_cloud]
-    packages: [iomux, sendfile, ioctls]
-    reqs: [IP6, IP6_ONLOAD, '!RESET_NIC']
-  ip6_testing4:
-    ools: [build_cloud]
-    packages: [basic, sockopts]
-    reqs: [IP6, IP6_ONLOAD]
-  ip6_testing5:
-    ex_packages: [route, usecases, bnbvalue, udp, tcp, iomux, sendfile, ioctls, basic,
-      sockopts, performance, congestion, level5/fd_caching]
-    ools: [build_cloud]
-    reqs: [IP6, IP6_ONLOAD, '!BPF']
+#  ip6_testing1:
+#    ools: [build_cloud]
+#    packages: [route, usecases, bnbvalue, udp]
+#    reqs: [IP6, IP6_ONLOAD]
+#  ip6_testing2:
+#    ools: [build_cloud]
+#    packages: [tcp]
+#    reqs: [IP6, IP6_ONLOAD, '!TCP_SUBPART']
+#  ip6_testing6:
+#    ools: [build_cloud]
+#    packages: [tcp]
+#    reqs: [IP6, IP6_ONLOAD, TCP_SUBPART]
+#  ip6_testing3:
+#    ools: [build_cloud]
+#    packages: [iomux, sendfile, ioctls]
+#    reqs: [IP6, IP6_ONLOAD, '!RESET_NIC']
+#  ip6_testing4:
+#    ools: [build_cloud]
+#    packages: [basic, sockopts]
+#    reqs: [IP6, IP6_ONLOAD]
+#  ip6_testing5:
+#    ex_packages: [route, usecases, bnbvalue, udp, tcp, iomux, sendfile, ioctls, basic,
+#      sockopts, performance, congestion, level5/fd_caching]
+#    ools: [build_cloud]
+#    reqs: [IP6, IP6_ONLOAD, '!BPF']
   transparent:
     ools: [scalable]
     packages: []
