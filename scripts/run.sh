@@ -63,7 +63,7 @@ RUN_OPTS="${RUN_OPTS} --sniff-not-feed-conf"
 RUN_OPTS="${RUN_OPTS} --tester-only-req-logues"
 do_item=true
 is_cmod=false
-is_mlx=false
+is_nonsf=false
 while test -n "$1" ; do
     case $1 in
         --help) usage ;;
@@ -109,10 +109,11 @@ while test -n "$1" ; do
         --cfg=*)
         cfg=${1#--cfg=}
 
-        # Use cfg without '-mlx' as hostname
+        # Use cfg without '-mlx', '-intl' as hostname
         hostname="${cfg/%-mlx/}"
+        hostname="${hostname/%-intl/}"
         if test "x$hostname" != "x$cfg" ; then
-            is_mlx=true
+            is_nonsf=true
         fi
 
         RUN_OPTS="${RUN_OPTS} --opts=run/$cfg"
@@ -224,7 +225,7 @@ OOL_SET=$(${RUNDIR}/scripts/ool_fix_consistency.sh $hostname $OOL_SET)
 AUX_REQS=$(${RUNDIR}/scripts/ool_fix_reqs.py --ools="$OOL_SET")
 RUN_OPTS="${RUN_OPTS} ${AUX_REQS}"
 
-if ! $is_cmod && ! $is_mlx ; then
+if ! $is_cmod && ! $is_nonsf ; then
     export_cmdclient $hostname
 
     # Note: firmware variants (full/low) applicable for sfc only
@@ -232,7 +233,7 @@ if ! $is_cmod && ! $is_mlx ; then
     export_iut_fw_version $hostname ${iut_ifs[0]}
 fi
 
-if ! $is_mlx ; then
+if ! $is_nonsf ; then
     OOL_SET=$(fw_var_consistency $OOL_SET)
     if test $? -eq 1 ; then
         exit 1
