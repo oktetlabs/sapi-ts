@@ -8,6 +8,7 @@ tools_test_deps += libtool_dep
 tests = [
     'prologue',
     'ssh_client',
+    'ssh_port_fwd_clnt',
 ]
 
 foreach test : tests
