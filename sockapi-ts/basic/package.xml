@@ -3037,7 +3037,10 @@
 
         <run>
             <script name="pthread_cancellation_point" track_conf="silent">
-                <req id="THREADS"/>
+              <req id="THREADS"/>
+              <!-- Pthread cancellation is not properly supported by Onload.
+                   So this test should be disabled. See Bug 11774. -->
+              <req id="BROKEN"/>
             </script>
             <arg name="env">
                 <value ref="env.peer2peer"/>
