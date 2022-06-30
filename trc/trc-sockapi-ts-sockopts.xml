@@ -20531,11 +20531,6 @@
         <arg name="tcp_state"/>
         <arg name="user_timeout"/>
         <notes/>
-        <results tags="v5" key="ON-2512">
-          <result value="FAILED">
-            <verdict>setsockopt(TCP_USER_TIMEOUT) failed with errno ENOPROTOOPT</verdict>
-          </result>
-        </results>
       </iter>
     </test>
     <test name="rcvbuf_stream" type="script">
