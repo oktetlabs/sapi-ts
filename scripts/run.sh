@@ -64,6 +64,7 @@ RUN_OPTS="${RUN_OPTS} --tester-only-req-logues"
 do_item=true
 is_cmod=false
 is_nonsf=false
+cfg_sfx=""
 while test -n "$1" ; do
     case $1 in
         --help) usage ;;
@@ -114,6 +115,7 @@ while test -n "$1" ; do
         hostname="${hostname/%-intl/}"
         if test "x$hostname" != "x$cfg" ; then
             is_nonsf=true
+            cfg_sfx="${cfg/${hostname}-/}"
         fi
 
         RUN_OPTS="${RUN_OPTS} --opts=run/$cfg"
@@ -221,7 +223,7 @@ if ! $is_cmod ; then
     fi
 fi
 
-OOL_SET=$(${RUNDIR}/scripts/ool_fix_consistency.sh $hostname $OOL_SET)
+OOL_SET=$(${RUNDIR}/scripts/ool_fix_consistency.sh $hostname "$cfg_sfx" $OOL_SET)
 AUX_REQS=$(${RUNDIR}/scripts/ool_fix_reqs.py --ools="$OOL_SET")
 RUN_OPTS="${RUN_OPTS} ${AUX_REQS}"
 
