@@ -19,9 +19,13 @@ kernel_list:
   Ubu4.15: [4.15.0-171-generic, 4.15.0-171-lowlatency]
 
 # Red Hat (updated 11.03.2022)
-# CentOS 8 and newer: do not forget to run
+# CentOS 8 and newer:
 #   sudo dnf upgrade --refresh
 #   sudo grub2-mkconfig -o /boot/grub2/grub.cfg
+# CentOS 9 and newer:
+#   vim /boot/grub/grub.cfg
+#   replace `set default="${saved_entry}"`
+#   by something like `set default="0"`
 # After a major upgrade:
 #    grep GRUB_ENABLE_BLSCFG /etc/default/grub
 #    sudo vim /etc/default/grub: GRUB_ENABLE_BLSCFG=false
