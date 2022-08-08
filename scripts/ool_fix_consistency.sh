@@ -488,6 +488,7 @@ function ipvlan_fix()
 function af_xdp_fix()
 {
     local info="af_xdp_fix"
+    local bug_11959_restrictions="vlan + onload + af_xdp on Intel/Mellanox NICs"
 
     ool_remove "af_xdp_common" \
         "$info: this option is not intended for standalone use"
@@ -524,6 +525,22 @@ function af_xdp_fix()
             if [[ "$iut_drv" != "sfc" ]] ; then
                 ool_remove "netns_*" \
                     "$info: Bug 11986: disable netns on SFC NICs with zc_af_xdp"
+            fi
+        fi
+
+        # Avoid ipvlan/macvaln testing over vlan using onload over af_xdp on
+        # Intel/Mellanox NICs.
+        # Bug 11959.
+        if [[ "$iut_drv" != "sfc" ]] ; then
+            if ool_contains "onload" && ool_contains "vlan" ; then
+                if ool_contains "ipvlan" ; then
+                    ool_remove "ipvlan" \
+                        "$info/Bug 11959: avoid ipvlan testing over $bug_11959_restrictions"
+                fi
+                if ool_contains "macvlan" ; then
+                    ool_remove "macvlan" \
+                        "$info/Bug 11959: avoid macvlan testing over $bug_11959_restrictions"
+                fi
             fi
         fi
     else
