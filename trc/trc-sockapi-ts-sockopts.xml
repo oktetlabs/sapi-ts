@@ -339,11 +339,6 @@
         <arg name="sock_type">SOCK_STREAM</arg>
         <arg name="write_end"/>
         <notes/>
-        <results tags="v5&amp;!(linux-2.6.32-5-amd64|linux-2.6.32-bpo.5)" key="ON-2512">
-          <result value="FAILED">
-            <verdict>Onload socket failed to get option TCP_USER_TIMEOUT with errno ENOPROTOOPT</verdict>
-          </result>
-        </results>
       </iter>
       <iter result="PASSED">
         <arg name="domain">PF_INET6</arg>
@@ -367,11 +362,6 @@
         <arg name="sock_type"/>
         <arg name="write_end"/>
         <notes/>
-        <results tags="v5&amp;!(linux-2.6.32-5-amd64|linux-2.6.32-bpo.5)" key="ON-2512">
-          <result value="FAILED">
-            <verdict>Onload socket failed to get option TCP_USER_TIMEOUT with errno ENOPROTOOPT</verdict>
-          </result>
-        </results>
       </iter>
       <iter result="PASSED">
         <arg name="domain"/>
@@ -2258,11 +2248,6 @@
         <arg name="sock_type">SOCK_STREAM</arg>
         <arg name="write_end"/>
         <notes/>
-        <results tags="v5" key="ON-2512">
-          <result value="FAILED">
-            <verdict>setsockopt(SOL_TCP, TCP_USER_TIMEOUT) unexpectedly failed with errno ENOPROTOOPT</verdict>
-          </result>
-        </results>
       </iter>
       <iter result="PASSED">
         <arg name="domain">PF_INET6</arg>
@@ -6081,11 +6066,6 @@
         <arg name="how">connect_another_listen</arg>
         <arg name="listen_before"/>
         <notes/>
-        <results tags="v5" key="ON-2512">
-          <result value="FAILED">
-            <verdict>getsockopt(SOL_TCP, TCP_USER_TIMEOUT) failed with errno ENOPROTOOPT</verdict>
-          </result>
-        </results>
       </iter>
       <iter result="PASSED">
         <arg name="accept_before"/>
@@ -6094,11 +6074,6 @@
         <arg name="how">connect_failed_connect</arg>
         <arg name="listen_before"/>
         <notes/>
-        <results tags="v5" key="ON-2512">
-          <result value="FAILED">
-            <verdict>getsockopt(SOL_TCP, TCP_USER_TIMEOUT) failed with errno ENOPROTOOPT</verdict>
-          </result>
-        </results>
       </iter>
       <iter result="PASSED">
         <arg name="accept_before"/>
@@ -6107,11 +6082,6 @@
         <arg name="how">connect_failed_listen</arg>
         <arg name="listen_before"/>
         <notes/>
-        <results tags="v5" key="ON-2512">
-          <result value="FAILED">
-            <verdict>getsockopt(SOL_TCP, TCP_USER_TIMEOUT) failed with errno ENOPROTOOPT</verdict>
-          </result>
-        </results>
       </iter>
       <iter result="PASSED">
         <arg name="accept_before"/>
@@ -6120,11 +6090,6 @@
         <arg name="how">listen_shutdown_connect</arg>
         <arg name="listen_before"/>
         <notes/>
-        <results tags="v5" key="ON-2512">
-          <result value="FAILED">
-            <verdict>getsockopt(SOL_TCP, TCP_USER_TIMEOUT) failed with errno ENOPROTOOPT</verdict>
-          </result>
-        </results>
       </iter>
       <iter result="PASSED">
         <arg name="accept_before"/>
@@ -6133,11 +6098,6 @@
         <arg name="how">listen_accept</arg>
         <arg name="listen_before"/>
         <notes/>
-        <results tags="v5" key="ON-2512">
-          <result value="FAILED">
-            <verdict>getsockopt(SOL_TCP, TCP_USER_TIMEOUT) failed with errno ENOPROTOOPT</verdict>
-          </result>
-        </results>
       </iter>
       <iter result="PASSED">
         <arg name="accept_before"/>
@@ -6146,11 +6106,6 @@
         <arg name="how">listen_shutdown_rd</arg>
         <arg name="listen_before"/>
         <notes/>
-        <results tags="v5" key="ON-2512">
-          <result value="FAILED">
-            <verdict>getsockopt(SOL_TCP, TCP_USER_TIMEOUT) failed with errno ENOPROTOOPT</verdict>
-          </result>
-        </results>
       </iter>
       <iter result="PASSED">
         <arg name="accept_before"/>
@@ -6159,11 +6114,6 @@
         <arg name="how">listen_shutdown_wr</arg>
         <arg name="listen_before"/>
         <notes/>
-        <results tags="v5" key="ON-2512">
-          <result value="FAILED">
-            <verdict>getsockopt(SOL_TCP, TCP_USER_TIMEOUT) failed with errno ENOPROTOOPT</verdict>
-          </result>
-        </results>
       </iter>
       <iter result="PASSED">
         <arg name="accept_before"/>
@@ -6172,11 +6122,6 @@
         <arg name="how">listen_shutdown_rdwr</arg>
         <arg name="listen_before"/>
         <notes/>
-        <results tags="v5" key="ON-2512">
-          <result value="FAILED">
-            <verdict>getsockopt(SOL_TCP, TCP_USER_TIMEOUT) failed with errno ENOPROTOOPT</verdict>
-          </result>
-        </results>
       </iter>
       <iter result="PASSED">
         <arg name="accept_before"/>
@@ -6185,11 +6130,6 @@
         <arg name="how">listen_shutdown_listen</arg>
         <arg name="listen_before"/>
         <notes/>
-        <results tags="v5" key="ON-2512">
-          <result value="FAILED">
-            <verdict>getsockopt(SOL_TCP, TCP_USER_TIMEOUT) failed with errno ENOPROTOOPT</verdict>
-          </result>
-        </results>
       </iter>
       <iter result="PASSED">
         <arg name="accept_before"/>
@@ -21273,11 +21213,6 @@
         <arg name="sock_type">SOCK_STREAM</arg>
         <arg name="write_end"/>
         <notes/>
-        <results tags="v5" key="ON-2512">
-          <result value="FAILED">
-            <verdict>getsockopt(SOL_TCP, TCP_USER_TIMEOUT) unexpectedly failed with errno ENOPROTOOPT</verdict>
-          </result>
-        </results>
       </iter>
       <iter result="PASSED">
         <arg name="domain">PF_INET6</arg>
