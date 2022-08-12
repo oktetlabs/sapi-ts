@@ -25,6 +25,23 @@ tools_ssh_create_keys(rcf_rpc_server *rpcs,
 
 /* See description in tools_lib.h */
 void
+tools_ssh_create_empty_sshd_config_file(rcf_rpc_server *rpcs)
+{
+    char *rpcs_ta_tmp_dir = NULL;
+    char *rpcs_ta_sshd_config_file = NULL;
+
+    CHECK_RC(cfg_get_instance_fmt(NULL, &rpcs_ta_tmp_dir,
+                                  "/agent:%s/tmp_dir:", rpcs->ta));
+
+    rpcs_ta_sshd_config_file = te_str_concat(rpcs_ta_tmp_dir, "sshd_config");
+    CHECK_RC(tapi_file_create_ta(rpcs->ta, rpcs_ta_sshd_config_file, ""));
+
+    free(rpcs_ta_sshd_config_file);
+    free(rpcs_ta_tmp_dir);
+}
+
+/* See description in tools_lib.h */
+void
 tools_ssh_prepare_client_file_paths_options(rcf_rpc_server *rpcs,
                                             tapi_ssh_client_opt *client_opt)
 {
@@ -67,6 +84,7 @@ tools_ssh_prepare_server_file_paths_options(rcf_rpc_server *rpcs,
 
     server_opt->authorized_keys_file = te_str_concat(rpcs_ta_tmp_dir, "authorized_keys");
     server_opt->pid_file = te_str_concat(rpcs_ta_tmp_dir, "sshd.pid");
+    server_opt->config_file = te_str_concat(rpcs_ta_tmp_dir, "sshd_config");
     server_opt->host_key_file =
                         tapi_cfg_key_get_private_key_path(rpcs->ta,
                                                           TOOLS_LIB_SSH_RSA_HOSTKEY_NAME);
@@ -86,5 +104,6 @@ tools_ssh_free_server_file_paths_strings(tapi_ssh_server_opt *server_opt)
 {
     free(server_opt->authorized_keys_file);
     free(server_opt->pid_file);
+    free(server_opt->config_file);
     free(server_opt->host_key_file);
 }

@@ -101,6 +101,9 @@ main(int argc, char *argv[])
     CHECK_RC(tapi_cfg_key_append_public(pco_iut->ta, iut_key.name,
                                         pco_tst->ta, "authorized_keys"));
 
+    TEST_STEP("Create empty sshd_config file.");
+    tools_ssh_create_empty_sshd_config_file(pco_tst);
+
     TEST_STEP("Prepare ssh server (detached sshd) options.");
     tst_sshd_opt.port = ntohs(te_sockaddr_get_port(tst_addr));
     tools_ssh_prepare_server_file_paths_options(pco_tst, &tst_sshd_opt);

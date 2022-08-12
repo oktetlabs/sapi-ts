@@ -79,6 +79,17 @@ extern te_errno tools_ssh_create_keys(rcf_rpc_server *rpcs,
                                       tools_ssh_key_data *key_data);
 
 /**
+ * Create empty sshd_config file.
+ *
+ * @note It is useful to create an empty custom configuration file
+ *       to prevent sshd from usage default one /etc/ssh/sshd_config
+ *       that may be a cause of errors related with deprecation options.
+ *
+ * @param rpcs                  RPC server handle.
+ */
+extern void tools_ssh_create_empty_sshd_config_file(rcf_rpc_server *rpcs);
+
+/**
  * Prepare necessary file paths options for client side.
  *
  * @param rpcs                  RPC server handle.
