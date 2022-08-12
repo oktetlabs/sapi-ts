@@ -428,6 +428,9 @@ main(int argc, char *argv[])
     CHECK_RC(tapi_cfg_key_append_public(pco_iut->ta, iut_key.name,
                                         pco_tst->ta, "authorized_keys"));
 
+    TEST_STEP("Create empty sshd_config file.");
+    tools_ssh_create_empty_sshd_config_file(pco_tst);
+
     TEST_STEP("Prepare tunnel data.");
     prepare_tunnel_data(&tdata, tester, server, client);
 
