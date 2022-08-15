@@ -75,8 +75,8 @@ typedef struct tools_ssh_key_data
  *
  * @return Status code.
  */
-te_errno tools_ssh_create_keys(rcf_rpc_server *rpcs,
-                               tools_ssh_key_data *key_data);
+extern te_errno tools_ssh_create_keys(rcf_rpc_server *rpcs,
+                                      tools_ssh_key_data *key_data);
 
 /**
  * Prepare necessary file paths options for client side.
@@ -84,15 +84,15 @@ te_errno tools_ssh_create_keys(rcf_rpc_server *rpcs,
  * @param rpcs                  RPC server handle.
  * @param client_opt            Client command line options.
  */
-void tools_ssh_prepare_client_file_paths_options(rcf_rpc_server *rpcs,
-                                                 tapi_ssh_client_opt *client_opt);
+extern void tools_ssh_prepare_client_file_paths_options(rcf_rpc_server *rpcs,
+                                                        tapi_ssh_client_opt *client_opt);
 
 /**
  * Free memory allocated for file paths storage in client option.
  *
  * @param client_opt            Keygen option in which file paths to free.
  */
-void tools_ssh_free_client_file_paths_strings(tapi_ssh_client_opt *client_opt);
+extern void tools_ssh_free_client_file_paths_strings(tapi_ssh_client_opt *client_opt);
 
 /**
  * Prepare necessary file paths options for server side.
@@ -100,15 +100,15 @@ void tools_ssh_free_client_file_paths_strings(tapi_ssh_client_opt *client_opt);
  * @param rpcs                  RPC server handle.
  * @param server_opt            Server command line options.
  */
-void tools_ssh_prepare_server_file_paths_options(rcf_rpc_server *rpcs,
-                                                 tapi_ssh_server_opt *server_opt);
+extern void tools_ssh_prepare_server_file_paths_options(rcf_rpc_server *rpcs,
+                                                        tapi_ssh_server_opt *server_opt);
 
 /**
  * Free memory allocated for file paths storage in server option.
  *
  * @param server_opt            Keygen option in which file paths to free.
  */
-void tools_ssh_free_server_file_paths_strings(tapi_ssh_server_opt *server_opt);
+extern void tools_ssh_free_server_file_paths_strings(tapi_ssh_server_opt *server_opt);
 
 #ifdef __cplusplus
 } /* extern "C" */
