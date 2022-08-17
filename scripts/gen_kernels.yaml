@@ -30,12 +30,11 @@ kernel_list:
 #    grep GRUB_ENABLE_BLSCFG /etc/default/grub
 #    sudo vim /etc/default/grub: GRUB_ENABLE_BLSCFG=false
 # Ensure that the base kernel has kernel-modules-extra installed.
-  FC  : [5.16.12-200.fc35]
-  Cent9: [5.14.0-70.el9, 5.14.0-70.rt21.70.el9]
-  El8-ml : [5.16.13-1.el8.elrepo]
-  El8-lt : [5.4.183-1.el8.elrepo]
-  Cent8Plus: [4.18.0-365.el8, 4.18.0-357.rt7.142.el8]
-  Cent8Next: [4.18.0-348.7.1.el8_5, 4.18.0-348.2.1.rt7.132.el8_5]
+  FC  : [5.18.17-100.fc35]
+  Cent9: [5.14.0-142.el9, 5.14.0-142.rt21.142.el9]
+  El8-ml : [5.19.1-1.el8.elrepo]
+  El8-lt : [5.4.210-1.el8.elrepo]
+  Cent8: [4.18.0-408.el8, 4.18.0-394.rt7.179.el8]
   El7-ml : [5.16.13-1.el7.elrepo]
   El7-lt : [5.4.183-1.el7.elrepo]
   RHEL7: [3.10.0-1160.59.1.el7, 3.10.0-1160.59.1.rt56.1200.el7]
@@ -111,7 +110,7 @@ cfg_list:
 
 # CentOS 8
 - hosts : [nar, mim]
-  master: [Cent8Plus, Cent8Next, El8-lt, El8-ml]
+  master: [Cent8, El8-lt, El8-ml]
 
 # RH7
 - hosts : [floi, frar]
