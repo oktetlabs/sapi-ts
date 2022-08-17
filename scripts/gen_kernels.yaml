@@ -4,13 +4,13 @@
 kernel_list:
 # Debian (updated 10.03.2022)
   Deb5debug : [5.12.8-debug-1]
-  Deb5last  : [5.16.0-3-amd64, 5.16.0-3-rt-amd64]
-  Deb5lastbpo: [5.16.0-0.bpo.4-amd64, 5.16.0-0.bpo.4-rt-amd64]
-  Deb5.10   : [5.10.0-13-amd64, 5.10.0-13-rt-amd64]
+  Deb5last  : [5.18.0-4-amd64, 5.18.0-4-rt-amd64]
+  Deb5lastbpo: [5.18.0-0.deb11.3-amd64, 5.18.0-0.deb11.3-rt-amd64]
+  Deb5.10   : [5.10.0-17-amd64, 5.10.0-17-rt-amd64]
   # It is 5.10 recompiled as per ON-13352, with features disabled
   Deb5min   : [5.10.46-min]
-  Deb5.10bpo : [5.10.0-0.bpo.9-amd64, 5.10.0-0.bpo.9-rt-amd64]
-  Deb4.19   : [4.19.0-19-amd64, 4.19.0-19-rt-amd64]
+  Deb5.10bpo : [5.10.0-0.deb10.16-amd64, 5.10.0-0.deb10.16-rt-amd64]
+  Deb4.19   : [4.19.0-21-amd64, 4.19.0-21-rt-amd64]
 
 # Ubuntu (updated 11.03.2022)
   Ubu5.15: [5.15.0-33-generic, 5.15.0-33-lowlatency]
@@ -54,12 +54,14 @@ cfg_list:
 ### Debian family
 
 # Testing
+# Fixme: rebuild a new debug kernel and add it here, see Deb5debug
 - hosts      : [hurin, elrond]
-  master     : [Deb5last, Deb5debug]
+  master     : [Deb5last]
   onload-7.1 : []
   eol6       : []
 
 # 11
+# Fixme: rebuild a new min kernel
 - hosts      : [oin, gloin]
   master     : [Deb5.10, Deb5lastbpo, Deb5min]
   onload-7.1 : [Deb5.10, Deb5min]
