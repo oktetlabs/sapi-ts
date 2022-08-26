@@ -64,12 +64,17 @@ slices:
     ools: []
     packages: [arp, route, ifcfg, reuseport]
     reqs: ['!IP6_ONLOAD', '!RESET_NIC']
+  # Task 12262: Async test siocpgrp from ioctls package has
+  # FIOASYNC requirement to run.
+  # Onload doesn't work properly in case of async tests +
+  # we are not interested in such testing results yet thus
+  # we disable them from night runs setting '!FIOASYNC'.
   ip4_testing10:
     ex_packages: [bpf, arp, route, ifcfg, reuseport, signal, basic, tcp,
       epoll, iomux, pmtu, sockopts, checksum, fcntl, multicast, usecases, bnbvalue, sendrecv,
       sendfile, performance, congestion, level5/fd_caching]
     ools: []
-    reqs: ['!IP6_ONLOAD', '!BPF', '!RESET_NIC']
+    reqs: ['!IP6_ONLOAD', '!BPF', '!RESET_NIC', '!FIOASYNC']
   # NIC reset testing is removed from night testing for now. We wait for
   # any reason to switch it on.
   nic_reset_testing:
@@ -104,10 +109,15 @@ slices:
     ools: []
     packages: [pmtu, sockopts, checksum]
     reqs: ['!IP6_ONLOAD']
+  # Task 12262: Async tests from fcntl package have
+  # O_ASYNC requirement to run.
+  # Onload doesn't work properly in case of async tests +
+  # we are not interested in such testing results yet thus
+  # we disable them from night runs setting '!O_ASYNC'.
   ip4_testing8:
     ools: []
     packages: [fcntl, multicast]
-    reqs: ['!IP6_ONLOAD']
+    reqs: ['!IP6_ONLOAD', '!O_ASYNC']
   ip4_testing9:
     ools: []
     packages: [usecases, bnbvalue, sendrecv, sendfile]
