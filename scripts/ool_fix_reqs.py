@@ -117,4 +117,11 @@ if "loop4" in ools and "m32" in ools:
 if "use_chk_funcs" not in ools:
     add_req("!CHK_FUNC", "the use_chk_funcs option is not specified")
 
+# af_xdp + zc_af_xdp parameter combinations
+# on sfc/intl crash further testing, see Bug-12053.
+if cfg_sfx_str == "" or cfg_sfx_str == "intl":
+    if "zc_af_xdp" in ools:
+        add_req("!IF_DOWN_UP",
+        "Bug-12053: sfc and i40e do not restore XDP state after down-up")
+
 print(reqs)
