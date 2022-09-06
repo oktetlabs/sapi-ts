@@ -11,10 +11,14 @@ parser = argparse.ArgumentParser(
                 'of necessary tester requirements.')
 parser.add_argument("--ools", required=True, type=str,
                     help="Set of OOL options")
+parser.add_argument("--cfg_sfx", required=True, type=str,
+                    help="Configuration suffix: intl, mlx or empty (in case of sfc)")
+
 args = parser.parse_args()
 
 ools_str = args.ools
 ools = ools_str.split(" ")
+cfg_sfx_str = args.cfg_sfx
 reqs = ""
 
 def ring(msg: str = "") -> None:
