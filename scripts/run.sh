@@ -224,7 +224,7 @@ if ! $is_cmod ; then
 fi
 
 OOL_SET=$(${RUNDIR}/scripts/ool_fix_consistency.sh $hostname "$cfg_sfx" $OOL_SET)
-AUX_REQS=$(${RUNDIR}/scripts/ool_fix_reqs.py --ools="$OOL_SET")
+AUX_REQS=$(${RUNDIR}/scripts/ool_fix_reqs.py --ools="$OOL_SET" --cfg_sfx="$cfg_sfx")
 RUN_OPTS="${RUN_OPTS} ${AUX_REQS}"
 
 if ! $is_cmod && ! $is_nonsf ; then
