@@ -272,7 +272,7 @@ fi
 iut_drv="$(get_cfg_env ${cfg} TE_ENV_IUT_NET_DRIVER)"
 iut_dut="$(get_cfg_env ${cfg} TE_ENV_IUT_EF_DUT)"
 OOL_SET=$(${RUNDIR}/scripts/ool_fix_consistency.sh $iut_drv $iut_dut $OOL_SET)
-AUX_REQS=$(${RUNDIR}/scripts/ool_fix_reqs.py --ools="$OOL_SET")
+AUX_REQS=$(${RUNDIR}/scripts/ool_fix_reqs.py --ools="$OOL_SET" --iut_drv="$iut_drv")
 RUN_OPTS="${RUN_OPTS} ${AUX_REQS}"
 
 RUN_OPTS="$RUN_OPTS $OOL_PROFILE"
