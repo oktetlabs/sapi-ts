@@ -122,4 +122,11 @@ if "use_chk_funcs" not in ools:
 add_req("!ONLOAD_ZC_SEND_USER_BUF",
         "ON-13696: onload_zc_send() with registered ZC buffer is broken")
 
+# af_xdp + zc_af_xdp parameter combinations
+# on sfc/i40e crash further testing, see Bug-12053.
+if iut_drv in ["sfc", "i40e"]:
+    if "zc_af_xdp" in ools:
+        add_req("!IF_DOWN_UP",
+        "Bug-12053: sfc and i40e do not restore XDP state after down-up")
+
 print(reqs)
