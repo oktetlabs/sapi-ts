@@ -61,6 +61,7 @@ main(int argc, char *argv[])
     int                   *sizes = NULL;
     int                    sizes_len;
     te_bool                spin;
+    const struct if_nameindex *iut_if;
 
     tapi_job_factory_t        *cl_factory = NULL;
     tapi_job_factory_t        *sv_factory = NULL;
@@ -82,12 +83,15 @@ main(int argc, char *argv[])
     int cpu_mask[] = {1};
     /* This value should match to cpu_mask value */
     const char *ef_periodic_timer_cpu = "1";
+    char *saved_af_xdp_kick_batch = NULL;
+    te_bool restore_af_xdp_kick_batch = FALSE;
 
     TEST_START;
     TEST_GET_PCO(pco_iut);
     TEST_GET_PCO(pco_tst);
     TEST_GET_ADDR(pco_tst, tst_addr);
     TEST_GET_ADDR(pco_iut, iut_addr);
+    TEST_GET_IF(iut_if);
     TEST_GET_PROTOCOL(proto);
     TEST_GET_INT_LIST_PARAM(sizes, sizes_len);
     TEST_GET_SFNT_PP_MUXER(muxer);
@@ -110,6 +114,25 @@ main(int argc, char *argv[])
      * It takes time, and sfnt-pingpong is sensitive to execution time.
      * See bug 12215.*/
     sockts_kill_zombie_stacks(pco_iut);
+
+    /* sfc driver is not doing well on these iterations with the default value
+     * of EF_AF_XDP_TX_KICK_BATCH, so let's decrease it. See bug 12300#note-4. */
+    if (proto == RPC_IPPROTO_TCP && spin == FALSE)
+    {
+        te_bool is_sfc;
+
+        saved_af_xdp_kick_batch = rpc_getenv(pco_iut, "EF_AF_XDP_TX_KICK_BATCH");
+
+        rc = sockts_interface_is_sfc(pco_iut->ta, iut_if->if_name, &is_sfc);
+        if (rc == 0 && is_sfc == TRUE)
+        {
+            rpc_setenv(pco_iut, "EF_AF_XDP_TX_KICK_BATCH", "2", 1);
+            restore_af_xdp_kick_batch = TRUE;
+        }
+
+        /* No need to restart RPC server since we've got new Onload instance
+         * when running sfnt-pingpong tool. */
+    }
 
     TEST_STEP("Create client and server of sfnt-pingpong");
     CHECK_RC(tapi_sfnt_pp_create(cl_factory, sv_factory,
@@ -179,5 +202,27 @@ cleanup:
     CHECK_RC(tapi_sfnt_pp_destroy_server(server));
     te_string_free(&res);
     te_vec_free(&vec);
+
+    /* Restore EF_AF_XDP_TX_KICK_BATCH from the previous value, or unset if
+     * it was not set. */
+    if (restore_af_xdp_kick_batch == TRUE)
+    {
+        RPC_AWAIT_IUT_ERROR(pco_iut);
+
+        if (saved_af_xdp_kick_batch != NULL)
+        {
+            rc = rpc_setenv(pco_iut, "EF_AF_XDP_TX_KICK_BATCH",
+                            saved_af_xdp_kick_batch, 1);
+            free(saved_af_xdp_kick_batch);
+        }
+        else
+        {
+            rc = rpc_unsetenv(pco_iut, "EF_AF_XDP_TX_KICK_BATCH");
+        }
+
+        if (rc != 0)
+            MACRO_TEST_ERROR;
+    }
+
     TEST_END;
 }
