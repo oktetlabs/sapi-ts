@@ -4,12 +4,12 @@
 kernel_list:
 # Debian (updated 10.03.2022)
   Deb5debug : [5.12.8-debug-1]
-  Deb5last  : [5.18.0-4-amd64, 5.18.0-4-rt-amd64]
-  Deb5lastbpo: [5.18.0-0.deb11.3-amd64, 5.18.0-0.deb11.3-rt-amd64]
-  Deb5.10   : [5.10.0-17-amd64, 5.10.0-17-rt-amd64]
+  Deb5last  : [5.19.0-1-amd64, 5.19.0-1-rt-amd64]
+  Deb5lastbpo: [5.18.0-0.deb11.4-amd64, 5.18.0-0.deb11.4-rt-amd64]
+  Deb5.10   : [5.10.0-18-amd64, 5.10.0-18-rt-amd64]
   # It is 5.10 recompiled as per ON-13352, with features disabled
   Deb5min   : [5.10.46-min]
-  Deb5.10bpo : [5.10.0-0.deb10.16-amd64, 5.10.0-0.deb10.16-rt-amd64]
+  Deb5.10bpo : [5.10.0-0.deb10.17-amd64, 5.10.0-0.deb10.17-rt-amd64]
   Deb4.19   : [4.19.0-21-amd64, 4.19.0-21-rt-amd64]
 
 # Ubuntu (updated 11.03.2022)
