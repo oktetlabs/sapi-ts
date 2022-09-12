@@ -30,13 +30,10 @@ kernel_list:
 #    sudo vim /etc/default/grub: GRUB_ENABLE_BLSCFG=false
 # Ensure that the base kernel has kernel-modules-extra installed.
   FC  : [5.18.17-100.fc35]
-  Cent9: [5.14.0-142.el9, 5.14.0-142.rt21.142.el9]
+  Cent9: [5.14.0-160.el9, 5.14.0-160.rt21.160.el9]
   El8-ml : [5.19.1-1.el8.elrepo]
   El8-lt : [5.4.210-1.el8.elrepo]
   Cent8: [4.18.0-408.el8, 4.18.0-394.rt7.179.el8]
-  El7-ml : [5.16.13-1.el7.elrepo]
-  El7-lt : [5.4.183-1.el7.elrepo]
-  RHEL7: [3.10.0-1160.59.1.el7, 3.10.0-1160.59.1.rt56.1200.el7]
 
 
 
@@ -105,14 +102,11 @@ cfg_list:
 # CentOS 9
 - hosts : [borin, bifur]
   master: [Cent9]
-  onload-7.1: [Cent9]
+
+- hosts : [floi, frar]
+  master: [Cent9]
 
 # CentOS 8
 - hosts : [nar, mim]
   master: [Cent8, El8-lt, El8-ml]
-
-# RH7
-- hosts : [floi, frar]
-  master: [RHEL7, El7-lt, El7-ml]
-  onload-7.1: [RHEL7, El7-lt]
 
