@@ -41,7 +41,12 @@
                 </arg>
         </run>
         <run>
-                <script name="sfnt_pingpong"/>
+                <script name="sfnt_pingpong">
+                    <!-- ool=scooby exports EF_AF_XDP_TX_KICK_BATCH=64 which
+                         does not work well with sfnt-pingpong.
+                         See bug 12309. -->
+                    <req id="NO_AF_XDP_SCOOBY"/>
+                </script>
                 <arg name="env">
                     <value ref="env.peer2peer"/>
                     <value ref="env.peer2peer_ipv6"/>
