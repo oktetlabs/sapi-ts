@@ -13,9 +13,9 @@ kernel_list:
   Deb4.19   : [4.19.0-21-amd64, 4.19.0-21-rt-amd64]
 
 # Ubuntu (updated 11.03.2022)
+  Ubu5.19: [5.19.0-15-generic, 5.19.0-1003-lowlatency]
   Ubu5.15: [5.15.0-46-generic, 5.15.0-46-lowlatency]
   Ubu5.4 : [5.4.0-124-generic, 5.4.0-124-lowlatency]
-  Ubu4.15: [4.15.0-191-generic, 4.15.0-191-lowlatency]
 
 # Red Hat (updated 11.03.2022)
 # CentOS 8 and newer:
@@ -73,6 +73,10 @@ cfg_list:
 
 ### Ubuntu family
 
+# 22.10
+- hosts : [fror, fundin]
+  master: [Ubu5.19]
+
 # 22.04 LTS
 - hosts : [nali, narvi]
   master: [Ubu5.15]
@@ -85,10 +89,6 @@ cfg_list:
 - hosts : [olorin, bofur]
   master: [Ubu5.4, Ubu5.15]
   eol6  : [Ubu5.4]
-
-# 18.04 LTS
-- hosts : [fror, fundin]
-  master: [Ubu4.15, Ubu5.4]
 
 
 ### Red Hat family
