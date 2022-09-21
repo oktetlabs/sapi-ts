@@ -106,7 +106,7 @@ if "af_xdp_no_filters" in ools and "reuse_stack" not in ools:
 
 # Bug 12309: --ool=scooby exports EF_AF_XDP_TX_KICK_BATCH=64 which does not
 # work well for some tests, e.g. performance/sfnt_pingpong.
-if ("af_xdp" in ools or "af_xdp_no_filters" in ools) and "scooby" in ools:
+if "af_xdp" in ools and "scooby" in ools:
     add_req("!NO_AF_XDP_SCOOBY",
             "Bug 12309: notify tests about af_xdp + scooby combination")
 
