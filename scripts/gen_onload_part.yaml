@@ -5,12 +5,12 @@ params:
     fror, fundin, mim, nar, oin, gloin]
   ef100_host: [xce-fpgahost18, xce-fpgahost18-soc]
   x3_host: [cmod-x3sim-ub1804, dellr220ae, dellr250e, dellr250g]
-  no_ipvlan: [floi, frar]
+  no_ipvlan: []
   no_m32: [xce-fpgahost18-soc]
   no_netns: []
   no_syscall: [xce-fpgahost18-soc]
   # ST-1523: Do not test vlan+macvlan on linux < 3.16
-  no_vlan_macvlan: [floi, frar]
+  no_vlan_macvlan: []
   # AF_XDP requires linux >= 5.4 or RHEL8 and x86_64
   no_af_xdp: [floi, frar,
               fror, fundin, xce-fpgahost18-soc, loni, telchar]
