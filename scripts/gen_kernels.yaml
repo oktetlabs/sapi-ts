@@ -13,7 +13,7 @@ kernel_list:
   Deb4.19   : [4.19.0-21-amd64, 4.19.0-21-rt-amd64]
 
 # Ubuntu (updated 11.03.2022)
-  Ubu5.19: [5.19.0-15-generic, 5.19.0-1003-lowlatency]
+  Ubu5.19: [5.19.0-18-generic, 5.19.0-1005-lowlatency]
   Ubu5.15: [5.15.0-46-generic, 5.15.0-46-lowlatency]
   Ubu5.4 : [5.4.0-124-generic, 5.4.0-124-lowlatency]
 
