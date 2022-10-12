@@ -12,10 +12,10 @@ kernel_list:
   Deb5.10bpo : [5.10.0-0.deb10.17-amd64, 5.10.0-0.deb10.17-rt-amd64]
   Deb4.19   : [4.19.0-21-amd64, 4.19.0-21-rt-amd64]
 
-# Ubuntu (updated 11.03.2022)
-  Ubu5.19: [5.19.0-18-generic, 5.19.0-1005-lowlatency]
-  Ubu5.15: [5.15.0-46-generic, 5.15.0-46-lowlatency]
-  Ubu5.4 : [5.4.0-124-generic, 5.4.0-124-lowlatency]
+# Ubuntu (updated 12.10.2022)
+  Ubu5.19: [5.19.0-19-generic, 5.19.0-1006-lowlatency]
+  Ubu5.15: [5.15.0-50-generic, 5.15.0-50-lowlatency]
+  Ubu5.4 : [5.4.0-128-generic, 5.4.0-128-lowlatency]
 
 # Red Hat (updated 11.03.2022)
 # CentOS 8 and newer:
