@@ -2,15 +2,15 @@
 # (c) Copyright 2004 - 2022 Xilinx, Inc. All rights reserved.
 # Kernel description part. Stable kernels should be the first one
 kernel_list:
-# Debian (updated 10.03.2022)
+# Debian (updated 13.10.2022)
   Deb5debug : [5.12.8-debug-1]
-  Deb5last  : [5.19.0-1-amd64, 5.19.0-1-rt-amd64]
-  Deb5lastbpo: [5.18.0-0.deb11.4-amd64, 5.18.0-0.deb11.4-rt-amd64]
+  Deb5last  : [6.0.0-trunk-amd64, 6.0.0-trunk-rt-amd64]
+  Deb5lastbpo: [5.19.0-0.deb11.2-amd64, 5.19.0-0.deb11.2-rt-amd64]
   Deb5.10   : [5.10.0-18-amd64, 5.10.0-18-rt-amd64]
   # It is 5.10 recompiled as per ON-13352, with features disabled
   Deb5min   : [5.10.46-min]
   Deb5.10bpo : [5.10.0-0.deb10.17-amd64, 5.10.0-0.deb10.17-rt-amd64]
-  Deb4.19   : [4.19.0-21-amd64, 4.19.0-21-rt-amd64]
+  Deb4.19   : [4.19.0-22-amd64, 4.19.0-22-rt-amd64]
 
 # Ubuntu (updated 12.10.2022)
   Ubu5.19: [5.19.0-19-generic, 5.19.0-1006-lowlatency]
