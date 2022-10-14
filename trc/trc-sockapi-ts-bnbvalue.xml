@@ -6092,6 +6092,11 @@
             <verdict>getsockopt(TCP_USER_TIMEOUT) has reduced opt_len and returned no error</verdict>
           </result>
         </results>
+        <results tags="v5" key="ON-2512">
+          <result value="FAILED">
+            <verdict>TCP_USER_TIMEOUT option is unknown at level SOL_TCP, getsockopt() failed, errno=ENOPROTOOPT</verdict>
+          </result>
+        </results>
       </iter>
       <iter result="PASSED">
         <arg name="buf_rlen">1</arg>
@@ -6106,6 +6111,11 @@
         <results tags="linux">
           <result value="PASSED">
             <verdict>getsockopt(TCP_USER_TIMEOUT) has not changed opt_len and returned no error</verdict>
+          </result>
+        </results>
+        <results tags="v5" key="ON-2512">
+          <result value="FAILED">
+            <verdict>TCP_USER_TIMEOUT option is unknown at level SOL_TCP, getsockopt() failed, errno=ENOPROTOOPT</verdict>
           </result>
         </results>
       </iter>
