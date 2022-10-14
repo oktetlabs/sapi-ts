@@ -300,7 +300,6 @@ main(int argc, char *argv[])
         flags |= TSA_TST_USE_REUSEADDR | TSA_ESTABLISH_PASSIVE |
                  TSA_MOVE_IGNORE_ERR;
     }
-    flags |= TSA_NO_CFG_WAIT_CHANGES;
 
     TEST_STEP("Prepare first TSA state instance, create TCP socket on IUT "
               "and peer on Tester");
