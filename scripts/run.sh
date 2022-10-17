@@ -113,6 +113,7 @@ while test -n "$1" ; do
         # Use cfg without '-mlx', '-intl' as hostname
         hostname="${cfg/%-mlx/}"
         hostname="${hostname/%-intl/}"
+        hostname="${hostname/%-e810/}"
         if test "x$hostname" != "x$cfg" ; then
             is_nonsf=true
             cfg_sfx="${cfg/${hostname}-/}"
