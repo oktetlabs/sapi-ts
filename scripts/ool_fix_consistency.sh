@@ -506,7 +506,6 @@ function ipvlan_fix()
 function af_xdp_fix()
 {
     local info="af_xdp_fix"
-    local bug_11959_restrictions="vlan + onload + af_xdp on Intel/Mellanox NICs"
 
     ool_remove "af_xdp_common" \
         "$info: this option is not intended for standalone use"
@@ -551,33 +550,13 @@ function af_xdp_fix()
                     "$info/Bug 12656: disable tiny_spin with af_xdp"
         fi
 
-        # Intel and Mellanox drivers misbehave in some cases.
+        # Both i40e and ice Intel drivers misbehave when Onload injects
+        # packets to kernel in case of onload + af_xdp + vlan
         # Bug 11959.
-        if [[ "$iut_drv" != "sfc" ]] ; then
+        if [[ "$iut_drv" == "i40e" ]] || [[ "$iut_drv" == "ice" ]]; then
             if ool_contains "onload" && ool_contains "vlan" ; then
-                # Avoid ipvlan/macvaln testing over vlan
-                # using onload over af_xdp on Intel/Mellanox NICs.
-                # Bug 11959.
-                if ool_contains "ipvlan" ; then
-                    ool_remove "ipvlan" \
-                        "$info/Bug 11959: avoid ipvlan testing over $bug_11959_restrictions"
-                fi
-                if ool_contains "macvlan" ; then
-                    ool_remove "macvlan" \
-                        "$info/Bug 11959: avoid macvlan testing over $bug_11959_restrictions"
-                fi
-                # Intel driver and old Mellanox one misbehave in cases of
-                # testing over vlan using onload over af_xdp on aggregation interfaces.
-                # There is no the problem on new Mellanox driver so we avoid such testing
-                # on Intel NICs only.
-                # Bug 11959.
-                if [[ "$iut_drv" == "i40e" ]] ; then
-                    if ool_contains "aggregation" ; then
-                            bug_11959_restrictions="${bug_11959_restrictions/\/Mellanox/}"
-                            ool_remove "aggregation" \
-                                "$info/Bug 11959: avoid aggregation testing over $bug_11959_restrictions"
-                    fi
-                fi
+                ool_remove "vlan" \
+                    "$info/Bug 11959: avoid Onload over af_xdp over vlan testing on Intel NICs"
             fi
         fi
     else
