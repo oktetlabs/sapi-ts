@@ -545,6 +545,11 @@ function af_xdp_fix()
             fi
         fi
 
+        if ool_contains "tiny_spin" ; then
+                ool_remove "tiny_spin" \
+                    "$info/Bug 12656: disable tiny_spin with af_xdp"
+        fi
+
         # Both i40e and ice Intel drivers misbehave when Onload injects
         # packets to kernel in case of onload + af_xdp + vlan
         # Bug 11959.
