@@ -526,18 +526,29 @@ function ipvlan_fix()
     fi
 }
 
+# Intel i40e/ice and Mellanox mlx5_core drivers misbehave when Onload injects
+# packets to the kernel in case of onload + af_xdp + vlan.
+# Bug 11959.
+vlan_af_xdp_problematic_drvs="i40e ice mlx5_core"
+
 function aggregation_fix()
 {
     local info="aggregation_fix"
-
     if ool_contains "aggregation" || ool_contains "team*" || ool_contains "bond*" ; then
         # aggregation interface + netns_iut has to be tested with either
         # macvlan/ipvlan or vlan
-        if ool_contains "netns_iut" && ! ool_contains "*vlan"; then
-            # The ordering is important, netns should be after
-            # team/bond and after macvlan/ipvlan/vlan;
-            ool_put_before "vlan" "netns_iut" \
-                "$info: aggregation + netns_iut should be tested at least with (mac/ip)vlan"
+        if ool_contains "netns_iut" && ! ool_contains "*vlan" ; then
+            if ool_contains "af_xdp*" && \
+               is_value_in_set "$iut_drv" "$vlan_af_xdp_problematic_drvs" ; then
+                # The ordering is important, netns should be after
+                # team/bond and after macvlan/ipvlan/vlan;
+                # avoid vlan in case of vlan + onload + af_xdp, see Bug-11959
+                ool_put_before "macvlan" "netns_iut" \
+                    "$info: aggregation + netns_iut should be tested at least with (mac/ip)vlan"
+            else
+                ool_put_before "vlan" "netns_iut" \
+                    "$info: aggregation + netns_iut should be tested at least with (mac/ip)vlan"
+            fi
         fi
     fi
 }
@@ -547,6 +558,7 @@ function aggregation_fix()
 function af_xdp_fix()
 {
     local info="af_xdp_fix"
+    local avoid_vlan_with_af_xdp_msg="avoid vlan in onload + af_xdp + vlan testing"
 
     ool_remove "af_xdp_common" \
         "$info: this option is not intended for standalone use"
@@ -591,13 +603,28 @@ function af_xdp_fix()
                     "$info/Bug 12656: disable tiny_spin with af_xdp"
         fi
 
-        # Both i40e and ice Intel drivers misbehave when Onload injects
-        # packets to kernel in case of onload + af_xdp + vlan
+        # Intel i40e/ice and Mellanox mlx5_core drivers misbehave when Onload injects
+        # packets to the kernel in case of onload + af_xdp + vlan.
+        # There is no consistency in case of Mellanox:
+        # it was found that vlan + onload + af_xdp on mlx5_core works well
+        # in case of Debian 11 with kernels (5.19/5.15) and doesn't
+        # work on Ubuntu 22.04.1 LTS with the same kernel versions.
         # Bug 11959.
-        if [[ "$iut_drv" == "i40e" ]] || [[ "$iut_drv" == "ice" ]]; then
-            if ool_contains "onload" && ool_contains "vlan" ; then
+        if ool_contains "vlan" && \
+            is_value_in_set "$iut_drv" "$vlan_af_xdp_problematic_drvs" ; then
+            if ool_contains "aggregation" || ool_contains "team*" || ool_contains "bond*" ; then
+                if ool_contains "netns_iut" ; then
+                    if ! ool_contains "macvlan" && ! ool_contains "ipvlan"; then
+                        ool_replace "vlan" "macvlan" \
+                            "$info/Bug 11959: $avoid_vlan_with_af_xdp_msg on Intel/Mellanox"
+                    else
+                        ool_remove "vlan" \
+                            "$info/Bug 11959: $avoid_vlan_with_af_xdp_msg on Intel/Mellanox"
+                    fi
+                fi
+            else
                 ool_remove "vlan" \
-                    "$info/Bug 11959: avoid Onload over af_xdp over vlan testing on Intel NICs"
+                    "$info/Bug 11959: $avoid_vlan_with_af_xdp_msg on Intel/Mellanox"
             fi
         fi
     else
