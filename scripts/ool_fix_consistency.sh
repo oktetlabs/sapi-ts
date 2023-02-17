@@ -628,6 +628,11 @@ function af_xdp_fix()
                         "$info/SWNETLINUX-4809/Bug 11986: disable netns on SFC NICs with zc_af_xdp"
                 fi
             fi
+
+            if [[ "$iut_drv" == "ice" ]] ; then
+                ool_remove "zc_af_xdp" \
+                    "$info/Bug 12753: disable zc_af_xdp on Intel NICs with ice driver"
+            fi
         fi
 
         if ool_contains "tiny_spin" ; then
