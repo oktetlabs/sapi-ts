@@ -22,9 +22,7 @@
                 <value ref="env.peer2peer"/>
                 <value ref="env.peer2peer_ipv6"/>
             </arg>
-            <arg name="action" list="sanity_list">
-                <value>pass</value>
-                <value reqs="V5_SANITY">drop</value>
+            <arg name="action">
                 <value>pass</value>
                 <value>drop</value>
             </arg>
@@ -39,12 +37,10 @@
                      interface only, so no point to test parent_if=FALSE. -->
                 <!-- <value>FALSE</value> -->
             </arg>
-            <arg name="link_type" list="sanity_list">
-                <value>xdp</value>
+            <arg name="link_type">
                 <value>xdp</value>
                 <!-- Do not test unsupported things. See discussion in
                      https://reviewboard.oktetlabs.ru/r/22098/ -->
-                <value reqs="SF_BLACKLIST">tc_ingress</value>
                 <value reqs="SF_BLACKLIST">tc_ingress</value>
             </arg>
         </run>
