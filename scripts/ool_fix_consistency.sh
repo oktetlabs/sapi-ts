@@ -624,15 +624,11 @@ function af_xdp_fix()
                     if ! ool_contains "macvlan" && ! ool_contains "ipvlan"; then
                         ool_replace "vlan" "macvlan" \
                             "$info/Bug 11959: $avoid_vlan_with_af_xdp_msg on Intel/Mellanox"
-                    else
-                        ool_remove "vlan" \
-                            "$info/Bug 11959: $avoid_vlan_with_af_xdp_msg on Intel/Mellanox"
                     fi
                 fi
-            else
-                ool_remove "vlan" \
-                    "$info/Bug 11959: $avoid_vlan_with_af_xdp_msg on Intel/Mellanox"
             fi
+            ool_remove "vlan" \
+                "$info/Bug 11959: $avoid_vlan_with_af_xdp_msg on Intel/Mellanox"
         fi
     else
         # zc_af_xdp should be used only with AF_XDP
