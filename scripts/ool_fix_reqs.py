@@ -133,4 +133,12 @@ if iut_drv in ["sfc", "i40e"]:
         add_req("!IF_DOWN_UP",
         "Bug-12053: sfc and i40e do not restore XDP state after down-up")
 
+# netns + zc_af_xdp parameter combination
+# on sfc crashes further testing, see SWNETLINUX-4809/Bug-11986.
+if iut_drv in ["sfc"]:
+    if "zc_af_xdp" in ools:
+        add_req("!NETNS",
+        "SWNETLINUX-4809/Bug-11986: do not test network namespaces of "
+        "SFC NICs with zc_af_xdp")
+
 print(reqs)
