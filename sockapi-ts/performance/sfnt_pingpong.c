@@ -83,8 +83,8 @@ main(int argc, char *argv[])
     int cpu_mask[] = {1};
     /* This value should match to cpu_mask value */
     const char *ef_periodic_timer_cpu = "1";
+    cfg_handle af_xdp_kick_batch_hdl = CFG_HANDLE_INVALID;
     char *saved_af_xdp_kick_batch = NULL;
-    te_bool restore_af_xdp_kick_batch = FALSE;
 
     TEST_START;
     TEST_GET_PCO(pco_iut);
@@ -121,17 +121,16 @@ main(int argc, char *argv[])
     {
         te_bool is_sfc;
 
-        saved_af_xdp_kick_batch = rpc_getenv(pco_iut, "EF_AF_XDP_TX_KICK_BATCH");
-
         rc = sockts_interface_is_sfc(pco_iut->ta, iut_if->if_name, &is_sfc);
         if (rc == 0 && is_sfc == TRUE)
         {
-            rpc_setenv(pco_iut, "EF_AF_XDP_TX_KICK_BATCH", "2", 1);
-            restore_af_xdp_kick_batch = TRUE;
+            af_xdp_kick_batch_hdl = sockts_set_env_gen(pco_iut,
+                                                       "EF_AF_XDP_TX_KICK_BATCH",
+                                                       "2", &saved_af_xdp_kick_batch,
+                                                       FALSE);
+            sockts_recreate_onload_stack(pco_iut);
+            rcf_rpc_server_restart(pco_iut);
         }
-
-        /* No need to restart RPC server since we've got new Onload instance
-         * when running sfnt-pingpong tool. */
     }
 
     TEST_STEP("Create client and server of sfnt-pingpong");
@@ -203,26 +202,8 @@ cleanup:
     te_string_free(&res);
     te_vec_free(&vec);
 
-    /* Restore EF_AF_XDP_TX_KICK_BATCH from the previous value, or unset if
-     * it was not set. */
-    if (restore_af_xdp_kick_batch == TRUE)
-    {
-        RPC_AWAIT_IUT_ERROR(pco_iut);
-
-        if (saved_af_xdp_kick_batch != NULL)
-        {
-            rc = rpc_setenv(pco_iut, "EF_AF_XDP_TX_KICK_BATCH",
-                            saved_af_xdp_kick_batch, 1);
-            free(saved_af_xdp_kick_batch);
-        }
-        else
-        {
-            rc = rpc_unsetenv(pco_iut, "EF_AF_XDP_TX_KICK_BATCH");
-        }
-
-        if (rc != 0)
-            MACRO_TEST_ERROR;
-    }
+    CLEANUP_CHECK_RC(sockts_restore_env_gen(pco_iut, af_xdp_kick_batch_hdl,
+                                            saved_af_xdp_kick_batch, FALSE));
 
     TEST_END;
 }

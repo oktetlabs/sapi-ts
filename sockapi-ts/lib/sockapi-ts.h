@@ -3394,7 +3394,7 @@ sockts_init_msghdr(rpc_msghdr *msg, int length)
  * 
  * @note The function is inteded for use only in prologues/epilouges, as some
  * packages require changing EF_ variables. Affected packages: reuseport, bpf,
- * timestamps and multicast.
+ * timestamps, performance and multicast.
  *
  * @param pco_iut   IUT RPC server
  */
