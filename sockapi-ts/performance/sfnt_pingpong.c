@@ -115,22 +115,17 @@ main(int argc, char *argv[])
      * See bug 12215.*/
     sockts_kill_zombie_stacks(pco_iut);
 
-    /* sfc driver is not doing well on these iterations with the default value
-     * of EF_AF_XDP_TX_KICK_BATCH, so let's decrease it. See bug 12300#note-4. */
-    if (proto == RPC_IPPROTO_TCP && spin == FALSE)
+    /* The test may fail with EINGPROGRESS on TCP iterations with the default
+     * value of EF_AF_XDP_TX_KICK_BATCH, so let's decrease it. It is acceptable
+     * workaround for sfnt_pingpong. See bug 12300#note-4 and bug 12811. */
+    if (proto == RPC_IPPROTO_TCP)
     {
-        te_bool is_sfc;
-
-        rc = sockts_interface_is_sfc(pco_iut->ta, iut_if->if_name, &is_sfc);
-        if (rc == 0 && is_sfc == TRUE)
-        {
-            af_xdp_kick_batch_hdl = sockts_set_env_gen(pco_iut,
-                                                       "EF_AF_XDP_TX_KICK_BATCH",
-                                                       "2", &saved_af_xdp_kick_batch,
-                                                       FALSE);
-            sockts_recreate_onload_stack(pco_iut);
-            rcf_rpc_server_restart(pco_iut);
-        }
+        af_xdp_kick_batch_hdl = sockts_set_env_gen(pco_iut,
+                                                   "EF_AF_XDP_TX_KICK_BATCH",
+                                                   "2", &saved_af_xdp_kick_batch,
+                                                   FALSE);
+        sockts_recreate_onload_stack(pco_iut);
+        rcf_rpc_server_restart(pco_iut);
     }
 
     TEST_STEP("Create client and server of sfnt-pingpong");
