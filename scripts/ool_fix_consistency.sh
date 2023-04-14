@@ -632,6 +632,11 @@ function af_xdp_fix()
                 ool_remove "zc_af_xdp" \
                     "$info/Bug 12753: disable zc_af_xdp on Intel NICs with ice driver"
             fi
+
+            if [[ "$iut_drv" == "virtio-pci" ]] ; then
+                ool_remove "zc_af_xdp" \
+                    "$info/Bug 12881: virtio_net driver does not support zerocopy mode"
+            fi
         fi
 
         if ool_contains "tiny_spin" ; then
