@@ -617,6 +617,11 @@ function af_xdp_fix()
                 ool_remove "zc_af_xdp" \
                     "$info/Bug 12881: virtio_net driver does not support zerocopy mode"
             fi
+
+            if [[ "$iut_drv" == "bcmgenet" ]] ; then
+                ool_remove "zc_af_xdp" \
+                    "$info/Bug 12882: zerocopy does not work with eBPF in SKB mode"
+            fi
         fi
 
         if ool_contains "tiny_spin" ; then
