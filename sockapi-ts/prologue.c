@@ -22,8 +22,10 @@
 #include "tapi_test.h"
 #include "tapi_proc.h"
 #include "tapi_cfg_iptables.h"
+#include "tapi_cfg_modules.h"
 #include "tapi_network.h"
 #include "tapi_host_ns.h"
+#include "tapi_reqs.h"
 #include "tapi_tags.h"
 #include "onload.h"
 #include "lib-ts.h"
@@ -713,6 +715,36 @@ set_onload_module_params(void)
     }
 }
 
+/* The prologue reperesentation of inject_kernel_gid = -2 */
+#define PROLOGUE_DISALLOW_INJECT_ALWAYS -2
+
+/**
+ * Modifies requirement for the sockets that accelerate
+ * multicast traffic only (onload_socket_unicast_nonaccel).
+ */
+static void
+fix_onload_unicast_nonaccel_req(void)
+{
+    int inject_kernel_gid = 0;
+    const char *iut_ta = getenv("TE_IUT_TA_NAME");
+
+    if (iut_ta == NULL)
+        TEST_FAIL("TE_IUT_TA_NAME is not set");
+
+    CHECK_RC(tapi_cfg_module_param_get_int(iut_ta, "onload",
+                                           "inject_kernel_gid",
+                                           &inject_kernel_gid));
+
+    if (inject_kernel_gid == PROLOGUE_DISALLOW_INJECT_ALWAYS)
+    {
+        RING("Avoid onload_unicast_nonaccel() socket function testing "
+             "if injection to the kernel is disallowed "
+             "(inject_kernel_gid = -2)");
+
+        CHECK_RC(tapi_reqs_modify("!ONLOAD_NONACCEL"));
+    }
+}
+
 /**
  * Add TRC tags reflecting device information.
  *
@@ -1097,6 +1129,12 @@ main(int argc, char **argv)
                       " on IUT");
             sockts_kmemleak_clear(ta);
         }
+    }
+
+    if (tapi_onload_run())
+    {
+        TEST_STEP("Fix test requirements for the run");
+        fix_onload_unicast_nonaccel_req();
     }
 
     TEST_STEP("Add TRC tags");
