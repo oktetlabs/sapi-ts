@@ -706,6 +706,40 @@ set_onload_module_params(void)
     }
 }
 
+/* The prologue reperesentation of inject_kernel_gid = -2 */
+#define PROLOGUE_DISALLOW_INJECT_ALWAYS -2
+
+/**
+ * Modifies requirement for the sockets that accelerate
+ * multicast traffic only (onload_socket_unicast_nonaccel).
+ *
+ * @param ta TA name.
+ *
+ * @return Status code.
+ */
+static te_errno
+fix_onload_unicast_nonaccel_req(const char *ta)
+{
+    int inject_kernel_gid = 0;
+    te_errno rc = 0;
+
+    rc = tapi_cfg_module_param_get_int(ta, "onload", "inject_kernel_gid",
+                                       &inject_kernel_gid);
+    if (rc != 0)
+        return rc;
+
+    if (inject_kernel_gid == PROLOGUE_DISALLOW_INJECT_ALWAYS)
+    {
+        RING("Avoid onload_unicast_nonaccel() socket function testing "
+             "if injection to the kernel is disallowed "
+             "(inject_kernel_gid = -2)");
+
+        rc = tapi_reqs_modify("!ONLOAD_NONACCEL");
+    }
+
+    return rc;
+}
+
 /**
  * Set Socket API library names for Test Agents in accordance
  * with configuration in configurator.conf.
@@ -932,6 +966,9 @@ main(int argc, char **argv)
             sockts_kmemleak_clear(ta);
         }
     }
+
+    TEST_STEP("Fix test requirements for the run");
+    CHECK_RC(fix_onload_unicast_nonaccel_req(pco_iut->ta));
 
     CHECK_RC(rc = cfg_tree_print(NULL, TE_LL_RING, "/:"));
 
