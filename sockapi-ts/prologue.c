@@ -712,21 +712,19 @@ set_onload_module_params(void)
 /**
  * Modifies requirement for the sockets that accelerate
  * multicast traffic only (onload_socket_unicast_nonaccel).
- *
- * @param ta TA name.
- *
- * @return Status code.
  */
-static te_errno
-fix_onload_unicast_nonaccel_req(const char *ta)
+static void
+fix_onload_unicast_nonaccel_req(void)
 {
     int inject_kernel_gid = 0;
-    te_errno rc = 0;
+    const char *iut_ta = getenv("TE_IUT_TA_NAME");
 
-    rc = tapi_cfg_module_param_get_int(ta, "onload", "inject_kernel_gid",
-                                       &inject_kernel_gid);
-    if (rc != 0)
-        return rc;
+    if (iut_ta == NULL)
+        TEST_FAIL("TE_IUT_TA_NAME is not set");
+
+    CHECK_RC(tapi_cfg_module_param_get_int(iut_ta, "onload",
+                                           "inject_kernel_gid",
+                                           &inject_kernel_gid));
 
     if (inject_kernel_gid == PROLOGUE_DISALLOW_INJECT_ALWAYS)
     {
@@ -734,10 +732,8 @@ fix_onload_unicast_nonaccel_req(const char *ta)
              "if injection to the kernel is disallowed "
              "(inject_kernel_gid = -2)");
 
-        rc = tapi_reqs_modify("!ONLOAD_NONACCEL");
+        CHECK_RC(tapi_reqs_modify("!ONLOAD_NONACCEL"));
     }
-
-    return rc;
 }
 
 /**
@@ -967,8 +963,11 @@ main(int argc, char **argv)
         }
     }
 
-    TEST_STEP("Fix test requirements for the run");
-    CHECK_RC(fix_onload_unicast_nonaccel_req(pco_iut->ta));
+    if (tapi_onload_run())
+    {
+        TEST_STEP("Fix test requirements for the run");
+        fix_onload_unicast_nonaccel_req();
+    }
 
     CHECK_RC(rc = cfg_tree_print(NULL, TE_LL_RING, "/:"));
 
