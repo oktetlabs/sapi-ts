@@ -737,76 +737,6 @@ fix_onload_unicast_nonaccel_req(void)
 }
 
 /**
- * Add TRC tags reflecting device information.
- *
- * @note The macro has to be called inside @ref trc_tags_add
- *
- * @param ta_     Test agent name.
- * @param ifname_ Interface name.
- * @param info_   Device information to retrieve and tag.
- */
-#define TRC_TAGS_ADD_DEVICE_INFO(ta_, ifname_, info_) \
-    do {                                                                      \
-        char *dev_info_ = NULL;                                               \
-        te_string dev_info_str_ = TE_STRING_INIT;                             \
-                                                                              \
-        te_string_append(&dev_info_str_, "%s", #info_ "-");                   \
-                                                                              \
-        rc = tapi_cfg_if_deviceinfo_##info_##_get(ta_, ifname_, &dev_info_);  \
-        if (rc != 0)                                                          \
-        {                                                                     \
-            ERROR("tapi_cfg_if_deviceinfo_" #info_ "_get() failed to get "    \
-                  #info_ " for interface %s on %s: %r", ifname_, ta_, rc);    \
-            free(dev_info_);                                                  \
-            return rc;                                                        \
-        }                                                                     \
-        te_string_append(&dev_info_str_, "%s", dev_info_);                    \
-                                                                              \
-        rc = te_string_replace_all_substrings(&dev_info_str_, "-", " ");      \
-        if (rc != 0)                                                          \
-        {                                                                     \
-            ERROR("te_string_replace_all_substrings() failed to replace "     \
-                  "spaces on hyphens in %s: %r", dev_info_str_.ptr, rc);      \
-            te_string_free(&dev_info_str_);                                   \
-            free(dev_info_);                                                  \
-            return rc;                                                        \
-        }                                                                     \
-                                                                              \
-        rc = tapi_tags_add_tag(dev_info_str_.ptr, NULL);                      \
-        if (rc != 0)                                                          \
-        {                                                                     \
-            ERROR("tapi_tags_add_tag() failed to add " #info_ " tag "         \
-                  "for interface %s on %s: %r", ifname_, ta_, rc);            \
-            te_string_free(&dev_info_str_);                                   \
-            free(dev_info_);                                                  \
-            return rc;                                                        \
-        }                                                                     \
-                                                                              \
-        te_string_free(&dev_info_str_);                                       \
-        free(dev_info_);                                                      \
-    } while(0)
-
-/**
- * Add TRC tags for the test configuration.
- *
- * @param ta     Test agent name (IUT).
- * @param ifname Interface name.
- *
- * @return Status code.
- */
-static te_errno
-trc_tags_add(const char *ta, const char *ifname)
-{
-    te_errno rc = 0;
-
-    TRC_TAGS_ADD_DEVICE_INFO(ta, ifname, drivername);
-    TRC_TAGS_ADD_DEVICE_INFO(ta, ifname, driverversion);
-    TRC_TAGS_ADD_DEVICE_INFO(ta, ifname, firmwareversion);
-
-    return rc;
-}
-
-/**
  * Set Socket API library names for Test Agents in accordance
  * with configuration in configurator.conf.
  *
@@ -1038,9 +968,6 @@ main(int argc, char **argv)
         TEST_STEP("Fix test requirements for the run");
         fix_onload_unicast_nonaccel_req();
     }
-
-    TEST_STEP("Add TRC tags");
-    CHECK_RC(trc_tags_add(pco_iut->ta, iut_if->if_name));
 
     CHECK_RC(rc = cfg_tree_print(NULL, TE_LL_RING, "/:"));
 
