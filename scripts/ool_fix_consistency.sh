@@ -530,12 +530,14 @@ function pkt_nocomp_fix()
 
 function ipvlan_fix()
 {
-    local info="ipvlan_fix"
+    local info="ipvlan_fix/ST-2119 ipvlan should be tested with netns_iut only"
     if ool_contains "ipvlan" ; then
-        ool_replace "netns_all" "netns_iut" \
-            "$info/ST-2119 ipvlan should be tested with netns_iut only"
-        ool_add "netns_iut" \
-            "$info/ST-2119 ipvlan should be tested with netns_iut only"
+        if ! ool_contains "af_xdp*" ; then
+            ool_replace "netns_all" "netns_iut" "$info"
+            ool_add "netns_iut" "$info"
+        else
+            ool_replace "ipvlan" "macvlan" "$info"
+        fi
     fi
 }
 
@@ -601,6 +603,9 @@ function af_xdp_fix()
         # Scalable filters are not supported
         ool_remove "scalable*" "$info: scalable filters are not supported"
 
+        ool_replace "netns_iut" "netns_all" \
+            "$info/Bug 12985: af_xdp works with netns_all only"
+
         if ool_contains "zc_af_xdp*" ; then
             if [[ "$iut_drv" == "sfc" ]] ; then
                 if ool_contains "netns_*" ; then
@@ -640,6 +645,8 @@ function af_xdp_fix()
         if ool_contains "vlan" && \
             is_value_in_set "$iut_drv" "$vlan_af_xdp_problematic_drvs" ; then
             if ool_contains "aggregation" || ool_contains "team*" || ool_contains "bond*" ; then
+                # Note: testing of netns_iut is disabled due to Bug 12985,
+                # but let this code stay here.
                 if ool_contains "netns_iut" ; then
                     if ! ool_contains "macvlan" && ! ool_contains "ipvlan"; then
                         ool_replace "vlan" "macvlan" \
