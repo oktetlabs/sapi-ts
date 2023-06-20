@@ -560,6 +560,27 @@ function ipvlan_fix()
     fi
 }
 
+#
+# netns_all moves/creates ALL tested interfaces into a separate network
+# namespace: unfortunately, Onload (onload_cp_server) cannot handle
+# the same if_indexes in different namespaces.
+#
+function netns_all_fix()
+{
+    local info="netns_all: test only real interfaces"
+
+    if ool_contains "netns_all" ; then
+        ool_remove "macvlan" "$info"
+        ool_remove "ipvlan" "$info"
+        ool_remove "vlan" "$info"
+        ool_remove "bond*" "$info"
+        ool_remove "team*" "$info"
+        ool_remove "aggregation" "$info"
+        unset SOCKAPI_TS_BOND
+    fi
+    netns_all_fix_done=true
+}
+
 # Intel i40e/ice and Mellanox mlx5_core drivers misbehave when Onload injects
 # packets to the kernel in case of onload + af_xdp + vlan.
 # Bug 11959.
@@ -568,6 +589,11 @@ vlan_af_xdp_problematic_drvs="i40e ice mlx5_core"
 function aggregation_fix()
 {
     local info="aggregation_fix"
+
+    if [[ -z "$netns_all_fix_done" ]] ; then
+        fail "${info}() should be after netns_all_fix()"
+    fi
+
     if ool_contains "aggregation" || ool_contains "team*" || ool_contains "bond*" ; then
         # aggregation interface + netns_iut has to be tested with either
         # macvlan/ipvlan or vlan
@@ -743,6 +769,7 @@ syscall_fix
 ef100soc_fix
 x3_fix
 build_ulhelper_fix
+netns_all_fix
 aggregation_fix
 af_xdp_fix
 # socket_cache_fix should be before scalable_fix
