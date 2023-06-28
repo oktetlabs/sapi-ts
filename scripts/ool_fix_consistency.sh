@@ -652,6 +652,9 @@ function af_xdp_fix()
         ool_replace "netns_iut" "netns_all" \
             "$info/Bug 12985: af_xdp works with netns_all only"
 
+        ool_remove "netns_all" \
+            "$info/Bug 13040: sapi-ts does not register interfaces in network namespaces"
+
         if ool_contains "zc_af_xdp*" ; then
             if [[ "$iut_drv" == "sfc" ]] ; then
                 if ool_contains "netns_*" ; then
