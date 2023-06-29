@@ -149,4 +149,9 @@ if iut_drv in ["sfc"]:
         "SWNETLINUX-4809/Bug-11986: do not test network namespaces of "
         "SFC NICs with zc_af_xdp")
 
+if "af_xdp" in ools or "af_xdp_no_filters" in ools:
+    # See also Bug 12985 about netns_iut
+    add_req("!NETNS",
+        "Bug-13040: sapi-ts does not register interfaces in network namespaces")
+
 print(reqs)
