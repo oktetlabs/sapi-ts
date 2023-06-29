@@ -2188,8 +2188,14 @@
             </arg>
             <arg name="exec">
                 <value>none</value>
-                <value reqs="EXEC">iut</value>
-                <value reqs="EXEC">aux</value>
+                <!-- exec=iut|aux iterations are disabled for AF_XDP because
+                     the test does bind() and connect() to the same addresses
+                     for sockets in different stacks. That results in an attempt
+                     to install the same hw filter twice, which is not supported
+                     by SSN over AF_XDP, and won't be fixed soon.
+                     See OL-Redmine-Id 12862. -->
+                <value reqs="EXEC,NO_AF_XDP">iut</value>
+                <value reqs="EXEC,NO_AF_XDP">aux</value>
             </arg>
             <arg name="pass_op" type="boolean"/>
 
