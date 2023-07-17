@@ -3411,6 +3411,22 @@ finish:
 }
 )
 
+#define IOVEC_RPC2H(_vector, _iov, _ptr) \
+do {                                                                    \
+    size_t i;                                                           \
+    memset(_iov, 0, sizeof(_iov));                                      \
+    for (i = 0; i < _vector.vector_len; i++)                            \
+    {                                                                   \
+        INIT_CHECKED_ARG(_vector.vector_val[i].iov_base.iov_base_val,   \
+                         _vector.vector_val[i].iov_base.iov_base_len,   \
+                         _vector.vector_val[i].iov_len);                \
+        _iov[i].iov_base = _vector.vector_val[i].iov_base.iov_base_val; \
+        _iov[i].iov_len = _vector.vector_val[i].iov_len;                \
+    }                                                                   \
+    _ptr = _vector.vector_len > 0 ? _iov : NULL;                        \
+} while (0)
+
+#ifdef ONLOAD_TEMPLATE_FLAGS_SEND_NOW
 /*----------------- onload_msg_template_alloc() --------------------------*/
 
 static int
@@ -3443,21 +3459,6 @@ onload_msg_template_alloc(int fd, const struct iovec *iov, int iovcnt,
 
     return func_alloc(fd, iov, iovcnt, handle, flags);
 }
-
-#define IOVEC_RPC2H(_vector, _iov, _ptr) \
-do {                                                                    \
-    size_t i;                                                           \
-    memset(_iov, 0, sizeof(_iov));                                      \
-    for (i = 0; i < _vector.vector_len; i++)                            \
-    {                                                                   \
-        INIT_CHECKED_ARG(_vector.vector_val[i].iov_base.iov_base_val,   \
-                         _vector.vector_val[i].iov_base.iov_base_len,   \
-                         _vector.vector_val[i].iov_len);                \
-        _iov[i].iov_base = _vector.vector_val[i].iov_base.iov_base_val; \
-        _iov[i].iov_len = _vector.vector_val[i].iov_len;                \
-    }                                                                   \
-    _ptr = _vector.vector_len > 0 ? _iov : NULL;                        \
-} while (0)
 
 TARPC_FUNC(onload_msg_template_alloc, {},
 {
@@ -3618,6 +3619,7 @@ TARPC_FUNC(template_send, {},
     }
 }
 )
+#endif
 
 /*------------ popen_flooder() -----------------------*/
 
@@ -8096,6 +8098,7 @@ TARPC_FUNC(thrd_sighnd_crtfile_exists_unlink, {},
 }
 )
 
+#ifdef ONLOAD_TEMPLATE_FLAGS_SEND_NOW
 /*-------- Handler for template_signal test --------*/
 
 /** Socket to pass Onload template. */
@@ -8137,6 +8140,7 @@ sighandler_template_send(int signo, siginfo_t *info, void *context)
 
     return;
 }
+#endif
 
 
 /*------------------- nested_requests test staff -------------------*/
