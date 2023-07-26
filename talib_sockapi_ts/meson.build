@@ -84,6 +84,7 @@ endforeach
 
 oo_extensions_h = [
     'onload_zc_hlrx_recv_zc',
+    'ONLOAD_TEMPLATE_FLAGS_SEND_NOW',
 ]
 
 foreach h : oo_extensions_h
