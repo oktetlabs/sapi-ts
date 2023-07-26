@@ -3428,7 +3428,7 @@ do {                                                                    \
     _ptr = _vector.vector_len > 0 ? _iov : NULL;                        \
 } while (0)
 
-#ifdef ONLOAD_TEMPLATE_FLAGS_SEND_NOW
+#ifdef HAVE_DECL_ONLOAD_TEMPLATE_FLAGS_SEND_NOW
 /*----------------- onload_msg_template_alloc() --------------------------*/
 
 static int
@@ -8090,7 +8090,7 @@ TARPC_FUNC(thrd_sighnd_crtfile_exists_unlink, {},
 }
 )
 
-#ifdef ONLOAD_TEMPLATE_FLAGS_SEND_NOW
+#ifdef HAVE_DECL_ONLOAD_TEMPLATE_FLAGS_SEND_NOW
 /*-------- Handler for template_signal test --------*/
 
 /** Socket to pass Onload template. */
