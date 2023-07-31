@@ -28,7 +28,9 @@
 - {null: 1, netns_all: 1, netns_iut: 1}
 - {no_reuse_pco: 1, reuse_pco: 1}
 - {null: 1, phys_mode: 1}
-- {fw_full_featured: 1, fw_low_latency: 1}
+# Task-13105: firmware variant is not interesting to us:
+# all cards are configured in full-feature firmware variant.
+#- {fw_full_featured: 1, fw_low_latency: 1}
 - {null: 7, high_throughput: 1, scooby: 2}
 - {null: 10, cplane_no_dump: 1, cplane_server_grace_timeout_zero: 2, 'cplane_server_grace_timeout_zero,cplane_no_dump': 1}
 - {null: 16, tcp_shared_ports: 1, 'tcp_shared_ports_reuse_fast,tcp_shared_ports': 1}
