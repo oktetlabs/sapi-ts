@@ -200,6 +200,25 @@ ool_put_before() {
     fi
 }
 
+# Replace ssn with "onload af_xdp branch_ssn", should be started first.
+function ssn_fix()
+{
+    local info="ssn_fix"
+
+    if ool_contains "ssn" ; then
+        if ool_contains "onload" ; then
+            fail "${info} do not mix ssn and onload"
+        fi
+
+        ool_replace "ssn" "onload" "$info"
+        ool_contains "branch_ssn" || ool_add "branch_ssn" "$info"
+
+        if ! ool_contains "af_xdp" && ! ool_contains "af_xdp_no_filters" ; then
+            ool_add "af_xdp" "$info"
+        fi
+    fi
+}
+
 function syscall_fix()
 {
     # Bug 81775 comment 1: syscall is supported for x86_64-only
@@ -747,6 +766,7 @@ function cplane_server_grace_timeout_zero_fix() {
 # Use reuse_pco by default if no_reuse_pco has not been set
 ool_contains "no_reuse_pco" || ool_add "reuse_pco" "set reuse_pco by default"
 
+ssn_fix
 zf_shim_fix
 syscall_fix
 ef100soc_fix
