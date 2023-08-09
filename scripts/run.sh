@@ -183,7 +183,7 @@ while test -n "$1" ; do
         OOL_SET="$OOL_SET $ool_config"
         if [[ "$ool_config" == "zf_shim" ]] ; then
             ZF_SHIM_RUN=true
-        elif [[ "$ool_config" == "onload" ]] ; then
+        elif [[ "$ool_config" == "onload" ]] || [[ "$ool_config" == "ssn" ]] ; then
             L5_RUN=true
         fi
         if [[ "$ool_config" != "${ool_config/tproxy/}" ]] ; then
