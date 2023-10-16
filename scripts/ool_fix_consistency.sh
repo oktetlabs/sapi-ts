@@ -725,6 +725,16 @@ function af_xdp_fix()
             ool_remove "vlan" \
                 "$info/Bug 11959: $avoid_vlan_with_af_xdp_msg on Intel/Mellanox"
         fi
+
+        # Socket-tester tests need very frequent stack poll timer in
+        # non-interrupt driven mode. See Bug 13257.
+        if ool_contains "*spin" &&
+           ! ool_contains "int_spin" &&
+           ! ool_contains "int_driven"
+        then
+            ool_add "frequent_periodic_poll" \
+                "$info/Bug 13257: adjust periodic poll timer"
+        fi
     else
         # zc_af_xdp should be used only with AF_XDP
         ool_remove "zc_af_xdp" \
