@@ -581,10 +581,8 @@ function netns_all_fix()
     netns_all_fix_done=true
 }
 
-# Intel i40e/ice and Mellanox mlx5_core drivers misbehave when Onload injects
-# packets to the kernel in case of onload + af_xdp + vlan.
-# Bug 11959.
-vlan_af_xdp_problematic_drvs="i40e ice mlx5_core"
+# OL-Bug-13402: AF_XDP does not work with vlan when vlan-aware drivers are in use.
+af_xdp_non_vlan_aware_drivers="sfc"
 
 function aggregation_fix()
 {
@@ -599,10 +597,10 @@ function aggregation_fix()
         # macvlan/ipvlan or vlan
         if ool_contains "netns_iut" && ! ool_contains "*vlan" ; then
             if ool_contains "af_xdp*" && \
-               is_value_in_set "$iut_drv" "$vlan_af_xdp_problematic_drvs" ; then
+               ! is_value_in_set "$iut_drv" "$af_xdp_non_vlan_aware_drivers" ; then
                 # The ordering is important, netns should be after
                 # team/bond and after macvlan/ipvlan/vlan;
-                # avoid vlan in case of vlan + onload + af_xdp, see Bug-11959
+                # avoid vlan in case of vlan + onload + af_xdp, see OL-Bug-13402
                 ool_put_before "macvlan" "netns_iut" \
                     "$info: aggregation + netns_iut should be tested at least with (mac/ip)vlan"
             else
@@ -618,7 +616,7 @@ function aggregation_fix()
 function af_xdp_fix()
 {
     local info="af_xdp_fix"
-    local avoid_vlan_with_af_xdp_msg="avoid vlan in onload + af_xdp + vlan testing"
+    local avoid_vlan_with_af_xdp_msg="OL-Bug-13402: AF_XDP does not work with vlan on non-sfc drivers"
 
     ool_remove "af_xdp_common" \
         "$info: this option is not intended for standalone use"
@@ -689,21 +687,21 @@ function af_xdp_fix()
         # it was found that vlan + onload + af_xdp on mlx5_core works well
         # in case of Debian 11 with kernels (5.19/5.15) and doesn't
         # work on Ubuntu 22.04.1 LTS with the same kernel versions.
-        # Bug 11959.
+        # OL Bugs: 11959, 13402.
         if ool_contains "vlan" && \
-            is_value_in_set "$iut_drv" "$vlan_af_xdp_problematic_drvs" ; then
+            ! is_value_in_set "$iut_drv" "$af_xdp_non_vlan_aware_drivers" ; then
             if ool_contains "aggregation" || ool_contains "team*" || ool_contains "bond*" ; then
                 # Note: testing of netns_iut is disabled due to Bug 12985,
                 # but let this code stay here.
                 if ool_contains "netns_iut" ; then
                     if ! ool_contains "macvlan" && ! ool_contains "ipvlan"; then
                         ool_replace "vlan" "macvlan" \
-                            "$info/Bug 11959: $avoid_vlan_with_af_xdp_msg on Intel/Mellanox"
+                            "$info/${avoid_vlan_with_af_xdp_msg}"
                     fi
                 fi
             fi
             ool_remove "vlan" \
-                "$info/Bug 11959: $avoid_vlan_with_af_xdp_msg on Intel/Mellanox"
+                "$info/${avoid_vlan_with_af_xdp_msg}"
         fi
 
         # Socket-tester tests need very frequent stack poll timer in
