@@ -603,6 +603,7 @@ function netns_all_fix()
 
 # OL-Bug-13402: AF_XDP does not work with vlan when vlan-aware drivers are in use.
 af_xdp_non_vlan_aware_drivers="sfc"
+af_xdp_non_vlan_aware_drivers_msg="Bug 13402: AF_XDP does not work with vlan on non-sfc drivers"
 
 function aggregation_fix()
 {
@@ -613,20 +614,20 @@ function aggregation_fix()
     fi
 
     if ool_contains "aggregation" || ool_contains "team*" || ool_contains "bond*" ; then
+        if ! is_value_in_set "$iut_drv" "$af_xdp_non_vlan_aware_drivers" ; then
+            ool_remove "aggregation" "$info: $af_xdp_non_vlan_aware_drivers_msg"
+            ool_remove "bond*" "$info: $af_xdp_non_vlan_aware_drivers_msg"
+            ool_remove "team*" "$info: $af_xdp_non_vlan_aware_drivers_msg"
+            unset SOCKAPI_TS_BOND
+            return 0
+        fi
         # aggregation interface + netns_iut has to be tested with either
         # macvlan/ipvlan or vlan
         if ool_contains "netns_iut" && ! ool_contains "*vlan" ; then
-            if ool_contains "af_xdp*" && \
-               ! is_value_in_set "$iut_drv" "$af_xdp_non_vlan_aware_drivers" ; then
-                # The ordering is important, netns should be after
-                # team/bond and after macvlan/ipvlan/vlan;
-                # avoid vlan in case of vlan + onload + af_xdp, see OL-Bug-13402
-                ool_put_before "macvlan" "netns_iut" \
-                    "$info: aggregation + netns_iut should be tested at least with (mac/ip)vlan"
-            else
-                ool_put_before "vlan" "netns_iut" \
-                    "$info: aggregation + netns_iut should be tested at least with (mac/ip)vlan"
-            fi
+            # The ordering is important, netns should be after
+            # team/bond and after macvlan/ipvlan/vlan;
+            ool_put_before "vlan" "netns_iut" \
+                "$info: aggregation + netns_iut should be tested at least with (mac/ip)vlan"
         fi
     fi
 }
@@ -636,7 +637,6 @@ function aggregation_fix()
 function af_xdp_fix()
 {
     local info="af_xdp_fix"
-    local avoid_vlan_with_af_xdp_msg="OL-Bug-13402: AF_XDP does not work with vlan on non-sfc drivers"
 
     ool_remove "af_xdp_common" \
         "$info: this option is not intended for standalone use"
@@ -716,12 +716,12 @@ function af_xdp_fix()
                 if ool_contains "netns_iut" ; then
                     if ! ool_contains "macvlan" && ! ool_contains "ipvlan"; then
                         ool_replace "vlan" "macvlan" \
-                            "$info/${avoid_vlan_with_af_xdp_msg}"
+                            "$info/${af_xdp_non_vlan_aware_drivers_msg}"
                     fi
                 fi
             fi
             ool_remove "vlan" \
-                "$info/${avoid_vlan_with_af_xdp_msg}"
+                "$info/${af_xdp_non_vlan_aware_drivers_msg}"
         fi
 
         # Socket-tester tests need very frequent stack poll timer in
