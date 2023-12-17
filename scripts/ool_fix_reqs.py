@@ -153,5 +153,8 @@ if "af_xdp" in ools or "af_xdp_no_filters" in ools:
     # See also Bug 12985 about netns_iut
     add_req("!NETNS",
         "Bug-13040: sapi-ts does not register interfaces in network namespaces")
+    if iut_drv not in ["sfc"]:
+        add_req("!VLAN",
+            "OL-Bug-13402: AF_XDP does not work with vlan on non-sfc drivers")
 
 print(reqs)
