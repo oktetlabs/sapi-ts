@@ -727,9 +727,10 @@ function af_xdp_fix()
         # non-interrupt driven mode. See Bug 13257.
         if ool_contains "*spin" &&
            ! ool_contains "int_spin" &&
-           ! ool_contains "int_driven"
+           ! ool_contains "int_driven" &&
+           ! ool_contains "frequent_periodic_poll"
         then
-            ool_add "frequent_periodic_poll" \
+            ool_add "faster_periodic_poll" \
                 "$info/Bug 13257: adjust periodic poll timer"
         fi
     else
