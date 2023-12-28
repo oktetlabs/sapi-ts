@@ -206,8 +206,8 @@ main(int argc, char *argv[])
 
     if (to_send == 0)
     {
-        TEST_VERDICT("The file is too small for the test: %d bytes",
-                     FILE_LENGTH);
+        ERROR("The file length is %d bytes", FILE_LENGTH);
+        TEST_VERDICT("The file is too small for the test");
     }
 
     pco_tst->op = RCF_RPC_CALL;
