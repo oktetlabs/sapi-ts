@@ -84,7 +84,6 @@ main(int argc, char *argv[])
     /* This value should match to cpu_mask value */
     const char *ef_periodic_timer_cpu = "1";
     cfg_handle af_xdp_kick_batch_hdl = CFG_HANDLE_INVALID;
-    char *saved_af_xdp_kick_batch = NULL;
 
     TEST_START;
     TEST_GET_PCO(pco_iut);
@@ -114,19 +113,6 @@ main(int argc, char *argv[])
      * It takes time, and sfnt-pingpong is sensitive to execution time.
      * See bug 12215.*/
     sockts_kill_zombie_stacks(pco_iut);
-
-    /* The test may fail with EINGPROGRESS on TCP iterations with the default
-     * value of EF_AF_XDP_TX_KICK_BATCH, so let's decrease it. It is acceptable
-     * workaround for sfnt_pingpong. See bug 12300#note-4 and bug 12811. */
-    if (proto == RPC_IPPROTO_TCP)
-    {
-        af_xdp_kick_batch_hdl = sockts_set_env_gen(pco_iut,
-                                                   "EF_AF_XDP_TX_KICK_BATCH",
-                                                   "2", &saved_af_xdp_kick_batch,
-                                                   FALSE);
-        sockts_recreate_onload_stack(pco_iut);
-        rcf_rpc_server_restart(pco_iut);
-    }
 
     TEST_STEP("Create client and server of sfnt-pingpong");
     CHECK_RC(tapi_sfnt_pp_create(cl_factory, sv_factory,
@@ -196,9 +182,6 @@ cleanup:
     CHECK_RC(tapi_sfnt_pp_destroy_server(server));
     te_string_free(&res);
     te_vec_free(&vec);
-
-    CLEANUP_CHECK_RC(sockts_restore_env_gen(pco_iut, af_xdp_kick_batch_hdl,
-                                            saved_af_xdp_kick_batch, FALSE));
 
     TEST_END;
 }
