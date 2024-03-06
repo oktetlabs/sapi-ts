@@ -156,5 +156,8 @@ if "af_xdp" in ools or "af_xdp_no_filters" in ools:
     if iut_drv not in ["sfc"]:
         add_req("!VLAN",
             "OL-Bug-13402: AF_XDP does not work with vlan on non-sfc drivers")
+    if iut_drv in ["virtio-pci"]:
+        add_req("!MSG_WARM",
+            "OL-Bug-13570: disable MSG_WARM tests for virtio drivers")
 
 print(reqs)
