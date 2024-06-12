@@ -31,6 +31,7 @@
 #include "lib-ts.h"
 #include "lib-ts_netns.h"
 #include "lib-ts_timestamps.h"
+#include "tapi_rpc_dirent.h"
 
 #define CONSOLE_NAME      "serial_console"
 #define AGENT_FOR_CONSOLE SERIAL_LOG_PARSER_AGENT
@@ -851,32 +852,78 @@ out:
  * @return Status code.
  */
 static te_errno
-set_max_stacks_possible(rcf_rpc_server *rpcs, const char *ifname)
+set_max_stacks_possible(rcf_rpc_server *rpcs)
 {
     te_errno             rc = 0;
     int                  max_stacks = 0;
     char                *stacks_limited = getenv("SOCKTS_MAX_STACKS_LIMITED");
     int                  imp_stacks = 0;
     te_string            max_stacks_s = TE_STRING_INIT_STATIC(256);
-    tqe_string          *phys_iface;
-    tqh_strings          phys_ifaces = TAILQ_HEAD_INITIALIZER(phys_ifaces);
-    const char          *ta = sockts_get_used_agt_name(rpcs, ifname);
+
+    rpc_dir_p dirp;
 
     /* Max amount of stacks should be set only when stacks are limited */
     if (stacks_limited == NULL || strcmp(stacks_limited, "yes") != 0)
         return 0;
 
-    sockts_find_parent_if(rpcs, ifname, &phys_ifaces);
-    phys_iface = TAILQ_FIRST(&phys_ifaces);
+#define RESOURCE_NICS_DIR "/sys/kernel/debug/sfc_resource/nics/"
+    dirp = rpc_opendir(rpcs, RESOURCE_NICS_DIR);
 
-    rc = cfg_get_int32(&max_stacks,
-                       "/agent:%s/interface:%s/channels:/combined:/current:",
-                       ta, phys_iface->v);
-    if (rc != 0)
+    /*
+     * Onload stack limitation does not depend on the interface under test.
+     * Without black/white lists all the interfaces are used.
+     */
+    while (TRUE)
     {
-        ERROR("Failed to get combined channels: %r", rc);
-        return rc;
+        te_string vi_lim_fpath = TE_STRING_INIT;
+        char *vi_lim_stripped;
+        char *vi_lim_output = NULL;
+        rpc_dirent *dent = NULL;
+        int lim;
+
+        dent = rpc_readdir(rpcs, dirp);
+        if (dent == NULL)
+            break;
+        if (dent->d_name[0] == '.')
+            continue;
+
+        te_string_append(&vi_lim_fpath, RESOURCE_NICS_DIR"%s/vi_lim",
+                         dent->d_name);
+
+        rc = tapi_file_read_ta(rpcs->ta, vi_lim_fpath.ptr, &vi_lim_output);
+        if (rc != 0)
+        {
+            RING("Failed to read %s:%s, rc=%r",
+                 rpcs->ta, vi_lim_fpath.ptr, rc);
+            free(dent);
+            te_string_free(&vi_lim_fpath);
+            continue;
+        }
+
+        vi_lim_stripped = te_str_strip_spaces(vi_lim_output);
+        rc = te_strtoi(vi_lim_stripped, 10, &lim);
+
+        if (rc != 0 || lim <= 0)
+        {
+            RING("Ignoring VI limitation from %s: \"%s\"",
+                 dent->d_name, vi_lim_stripped);
+        }
+        else
+        {
+            RING("%s: %d VIs", dent->d_name, lim);
+            if (max_stacks == 0 || max_stacks > lim)
+                max_stacks = lim;
+        }
+
+        free(vi_lim_stripped);
+        free(vi_lim_output);
+        free(dent);
+        te_string_free(&vi_lim_fpath);
     }
+    rpc_closedir(rpcs, dirp);
+#undef RESOURCE_NICS_DIR
+
+
     if (max_stacks <= 0)
     {
         RING_VERDICT("The stack number is expected to be limited by "
@@ -1023,7 +1070,7 @@ main(int argc, char **argv)
     TEST_GET_PCO(pco_tst);
     TEST_GET_IF(iut_if);
 
-    CHECK_RC(set_max_stacks_possible(pco_iut, iut_if->if_name));
+    CHECK_RC(set_max_stacks_possible(pco_iut));
 
     pco_gw = tapi_env_get_pco(&env, "pco_gw");
     if (pco_gw == NULL)
