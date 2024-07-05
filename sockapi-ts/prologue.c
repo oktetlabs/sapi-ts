@@ -842,8 +842,7 @@ out:
 }
 
 /**
- * Set maximum amount stacks possible on the interface based on
- * combined channels if it's required.
+ * Set maximum amount stacks possible.
  *
  * @return Status code.
  */
@@ -922,9 +921,8 @@ set_max_stacks_possible(rcf_rpc_server *rpcs)
 
     if (max_stacks <= 0)
     {
-        RING_VERDICT("The stack number is expected to be limited by "
-                     "combined channels amount, but combined channels are "
-                     "not supported on this interface or its amount is 0");
+        RING_VERDICT("Failed to get VI number for any "
+                     "registered interface.");
         return 0;
     }
 
