@@ -160,4 +160,7 @@ if "af_xdp" in ools or "af_xdp_no_filters" in ools:
         add_req("!MSG_WARM",
             "OL-Bug-13570: disable MSG_WARM tests for virtio drivers")
 
+add_req("!CHANGE_DEFAULT_ROUTE",
+    "Bug-14105: the tests are incompatible with the test rig setups")
+
 print(reqs)
