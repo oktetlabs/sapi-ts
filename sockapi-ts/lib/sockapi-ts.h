@@ -2036,10 +2036,12 @@ rpc_send_func_by_string(const char *func_name)
         return rpc_send_func_aio_write_callback;
     else if (strcmp(func_name, "aio_write") == 0)
         return rpc_send_func_aio_write;
+#ifdef ONLOAD_DELEGATED_SEND_FLAG_IGNORE_ARP
     else if (strcmp(func_name, "od_send") == 0)
         return rpc_send_func_od_send;
     else if (strcmp(func_name, "od_send_raw") == 0)
         return rpc_send_func_od_send_raw;
+#endif /* ONLOAD_DELEGATED_SEND_FLAG_IGNORE_ARP */
     else
         return NULL;
 }
@@ -2080,10 +2082,12 @@ rpc_send_func_name(rpc_send_f func)
         return "aio_write_callback";
     else if (func == rpc_send_func_aio_write)
         return "aio_write";
+#ifdef ONLOAD_DELEGATED_SEND_FLAG_IGNORE_ARP
     else if (func == rpc_send_func_od_send)
         return "od_send";
     else if (func == rpc_send_func_od_send_raw)
         return "od_send_raw";
+#endif /* ONLOAD_DELEGATED_SEND_FLAG_IGNORE_ARP */
     else
         return "(unknown)";
 }

@@ -57,6 +57,7 @@ main(int argc, char *argv[])
     TEST_GET_BOOL_PARAM(raw_send);
     TEST_GET_INT_PARAM(length);
 
+#ifdef ONLOAD_DELEGATED_SEND_FLAG_IGNORE_ARP
     TEST_STEP("Create TCP connection between IUT and tester.");
     GEN_CONNECTION(pco_iut, pco_tst, RPC_SOCK_STREAM, RPC_PROTO_DEF,
                    iut_addr, tst_addr, &iut_s, &tst_s);
@@ -140,6 +141,9 @@ main(int argc, char *argv[])
         TEST_VERDICT("Received data differs from the sent");
 
     TEST_SUCCESS;
+#else
+    TEST_SKIP("Delegated send is not supported");
+#endif /* ONLOAD_DELEGATED_SEND_FLAG_IGNORE_ARP */
 
 cleanup:
 

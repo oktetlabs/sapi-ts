@@ -15,7 +15,7 @@
 
 #include "rcf_rpc.h"
 #include "te_rpc_types.h"
-#include "extensions.h"
+#include "compat_extensions.h"
 
 /** Default Onload MSS */
 #define ONLOAD_MSS 1448
