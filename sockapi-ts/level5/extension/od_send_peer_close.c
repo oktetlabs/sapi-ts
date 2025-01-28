@@ -74,6 +74,7 @@ typedef struct
     int     complete_error;
 } ods_exp_fail;
 
+#ifdef ONLOAD_DELEGATED_SEND_FLAG_IGNORE_ARP
 #define IOCALL(pco, s, buf, len)                            \
     aux_func_is_send ?                                      \
              ((rpc_send_f)aux_func)(pco, s, buf, len, 0) :  \
@@ -242,6 +243,7 @@ check_so_error(rcf_rpc_server *rpcs, int sock, te_bool got_epipe,
     if (got_econnreset && TE_RC_GET_ERROR(err) == ECONNRESET)
         TEST_VERDICT("getsockopt(SO_ERROR) unexpectedly returned ECONNRESET");
 }
+#endif /* ONLOAD_DELEGATED_SEND_FLAG_IGNORE_ARP */
 
 int
 main(int argc, char *argv[])
@@ -284,6 +286,7 @@ main(int argc, char *argv[])
     if (first_call == NO_ODS || second_call == NO_ODS)
         TEST_GET_FUNC(aux_func, aux_func_is_send);
 
+#ifdef ONLOAD_DELEGATED_SEND_FLAG_IGNORE_ARP
     if (first_call != NO_ODS)
     {
         if (first_call == OD_SEND_RAW)
@@ -421,6 +424,9 @@ main(int argc, char *argv[])
     }
 
     TEST_SUCCESS;
+#else
+    TEST_SKIP("Delegated send is not supported");
+#endif /* ONLOAD_DELEGATED_SEND_FLAG_IGNORE_ARP */
 
 cleanup:
     CLEANUP_RPC_CLOSE(pco_iut, iut_s);

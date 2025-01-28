@@ -80,6 +80,7 @@ main(int argc, char *argv[])
     TEST_GET_BOOL_PARAM(raw_send);
     TEST_GET_BOOL_PARAM(small_portion);
 
+#ifdef ONLOAD_DELEGATED_SEND_FLAG_IGNORE_ARP
     length = small_portion ? SMALL_PORTION : BIG_PORTION;
     recvbuf = te_make_buf_by_len(recvbuf_len);
 
@@ -215,6 +216,9 @@ main(int argc, char *argv[])
         TEST_VERDICT("Sent and received data amount differ");
 
     TEST_SUCCESS;
+#else
+    TEST_SKIP("Delegates send is not supported");
+#endif /* ONLOAD_DELEGATED_SEND_FLAG_IGNORE_ARP */
 
 cleanup:
     CLEANUP_RPC_CLOSE(pco_iut, iut_s);
