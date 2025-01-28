@@ -22,6 +22,7 @@ od_send_ext(rcf_rpc_server *pco_iut, int iut_s, const void *sendbuf,
             int length, int flags, te_bool raw_send,
             int ifindex, int raw_socket, size_t *send_complete)
 {
+#ifdef ONLOAD_DELEGATED_SEND_FLAG_IGNORE_ARP
     struct onload_delegated_send ods;
     uint8_t    headers[OD_HEADERS_LEN];
     rpc_iovec  iov[2];
@@ -79,5 +80,17 @@ od_send_ext(rcf_rpc_server *pco_iut, int iut_s, const void *sendbuf,
         rpc_onload_delegated_send_cancel(pco_iut, iut_s);
 
     return rc;
+#else
+    UNUSED(pco_iut);
+    UNUSED(iut_s);
+    UNUSED(sendbuf);
+    UNUSED(length);
+    UNUSED(flags);
+    UNUSED(raw_send);
+    UNUSED(ifindex);
+    UNUSED(raw_socket);
+    UNUSED(send_complete);
+    TEST_SKIP("Delegates send is not supported");
+#endif /* ONLOAD_DELEGATED_SEND_FLAG_IGNORE_ARP */
 }
 

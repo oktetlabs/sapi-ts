@@ -27,6 +27,7 @@
 
 #include "onload_rpc.h"
 
+#ifdef ONLOAD_DELEGATED_SEND_FLAG_IGNORE_ARP
 /** Buffer for logging RPC calls */
 static char str_buf_1[8192];
 
@@ -260,6 +261,74 @@ rpc_onload_delegated_send_cancel(rcf_rpc_server *rpcs, int fd)
                  "%d", "%d", fd, out.retval);
     RETVAL_INT(onload_delegated_send_cancel, out.retval);
 }
+#else
+/* See description in the onload_rpc.h */
+rpc_onload_delegated_send_rc
+rpc_onload_delegated_send_prepare(rcf_rpc_server *rpcs, int fd, int size,
+                                  unsigned flags,
+                                  struct onload_delegated_send *ods)
+{
+    UNUSED(rpcs);
+    UNUSED(fd);
+    UNUSED(size);
+    UNUSED(flags);
+    UNUSED(ods);
+    TEST_SKIP("Delegated send is not supported");
+    return ONLOAD_DELEGATED_SEND_RC_OK;
+}
+
+/* See description in the onload_rpc.h */
+void
+rpc_onload_delegated_send_tcp_update(rcf_rpc_server *rpcs,
+                                     struct onload_delegated_send* ods,
+                                     int bytes, int push)
+{
+    UNUSED(rpcs);
+    UNUSED(ods);
+    UNUSED(bytes);
+    UNUSED(push);
+    TEST_SKIP("Delegated send is not supported");
+}
+
+/* See description in the onload_rpc.h */
+void
+rpc_onload_delegated_send_tcp_advance(rcf_rpc_server *rpcs,
+                                      struct onload_delegated_send* ods,
+                                      int bytes)
+{
+    UNUSED(rpcs);
+    UNUSED(ods);
+    UNUSED(bytes);
+    TEST_SKIP("Delegated send is not supported");
+}
+
+/* See description in the onload_rpc.h */
+int
+rpc_onload_delegated_send_complete_gen(rcf_rpc_server *rpcs, int fd,
+                                       rpc_iovec* iov, int riovlen,
+                                       int iovlen, int flags)
+{
+    UNUSED(rpcs);
+    UNUSED(fd);
+    UNUSED(iov);
+    UNUSED(riovlen);
+    UNUSED(iovlen);
+    UNUSED(flags);
+    TEST_SKIP("Delegated send is not supported");
+    return 0;
+}
+
+/* See description in the onload_rpc.h */
+int
+rpc_onload_delegated_send_cancel(rcf_rpc_server *rpcs, int fd)
+{
+    UNUSED(rpcs);
+    UNUSED(fd);
+    TEST_SKIP("Delegated send is not supported");
+    return 0;
+}
+
+#endif /* ONLOAD_DELEGATED_SEND_FLAG_IGNORE_ARP */
 
 /* See description in the onload_rpc.h */
 int
