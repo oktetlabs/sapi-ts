@@ -3858,6 +3858,7 @@ TARPC_FUNC(onload_ordered_epoll_wait,
 }
 )
 
+#ifdef ONLOAD_DELEGATED_SEND_FLAG_IGNORE_ARP
 /*------------------------- od_raw_send() --------------------------------*/
 
 /**
@@ -4365,6 +4366,7 @@ TARPC_FUNC(od_send, {},
     free(iov);
 }
 )
+#endif /* ONLOAD_DELEGATED_SEND_FLAG_IGNORE_ARP */
 
 /*--------------nb_receiver() --------------------------*/
 

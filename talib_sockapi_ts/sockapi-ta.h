@@ -13,7 +13,7 @@
 #ifndef __SOCKAPI_TA_H__
 #define __SOCKAPI_TA_H__
 
-#include "extensions.h"
+#include "compat_extensions.h"
 
 /**
  * Convert error value which can be returned by function
@@ -64,6 +64,7 @@ ods_prepare_err2string(int rc)
 static inline int
 od_get_min(struct onload_delegated_send *ods)
 {
+#ifdef ONLOAD_DELEGATED_SEND_FLAG_IGNORE_ARP
     int min = ods->user_size;
 
     if (min > ods->mss)
@@ -78,6 +79,10 @@ od_get_min(struct onload_delegated_send *ods)
          ods->cong_wnd, min);
 
     return min;
+#else
+    UNUSED(ods);
+    return 0;
+#endif /* ONLOAD_DELEGATED_SEND_FLAG_IGNORE_ARP */
 }
 
 
