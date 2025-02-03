@@ -4173,6 +4173,13 @@ extern void
 sockts_destroy_netns(const char *ta, rcf_rpc_server *rpcs_ns,
                      const char *netns, const char *netns_ta);
 
+static inline bool branch_ssn()
+{
+    char *ool_branch = getenv("OOL_BRANCH");
+
+    return (ool_branch != NULL && strcmp(ool_branch, "ssn") == 0);
+}
+
 #ifdef __cplusplus
 } /* extern "C" */
 #endif
