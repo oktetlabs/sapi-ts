@@ -27,6 +27,14 @@
     "/parser:"SERIAL_LOG_PARSER_NAME        \
     "/event:onload_banners/counter:"
 
+/*
+ * ssn_xdp_register may encounter the removal of several zombie stacks,
+ * this may take some time.
+ */
+#define SSN_XDP_UNREG_WAIT_TIMEOUT_MS   60000
+#define SSN_XDP_UNREG_RETRY_TIMEOUT_MS  500
+#define SSN_XDP_UNREG_RETRIES_NUM       10
+
 /**
  * Stop nfq_daemon on @p pco.
  *
@@ -118,6 +126,36 @@ sockts_check_zombie_stack(rcf_rpc_server *rpcs)
     }
 }
 
+static void
+ssn_xdp_unregister(rcf_rpc_server *rpcs)
+{
+    unsigned int i;
+    rpc_wait_status rc;
+
+    for (i = 0; i < SSN_XDP_UNREG_RETRIES_NUM; i++)
+    {
+        rpcs->timeout = SSN_XDP_UNREG_WAIT_TIMEOUT_MS;
+
+        RPC_AWAIT_IUT_ERROR(rpcs);
+        rc = rpc_system_ex(rpcs, "%s --unregister --zombie", SSN_XDP_REGISTER);
+        if (rc.value == 0)
+            break;
+
+        if (i < SSN_XDP_UNREG_RETRIES_NUM)
+        {
+            te_motivated_msleep(SSN_XDP_UNREG_RETRY_TIMEOUT_MS,
+                                "wait for the next attempt to ungregistering");
+        }
+    }
+
+    if (rc.value != 0)
+    {
+        ERROR("%s() failed to unregister interfaces on %s after %u "
+              "attempts", __func__, rpcs->ta, i);
+        ERROR_VERDICT("Unable to unregister interfaces");
+    }
+}
+
 /**
  * Cleanup.
  *
@@ -194,6 +232,35 @@ main(int argc, char **argv)
         if (kill_zombie_stacks != NULL &&
             strcmp(kill_zombie_stacks, "yes") == 0)
             sockts_kill_check_zombie_stack(pco_iut, TRUE);
+    }
+
+
+    if (branch_ssn())
+    {
+        rcf_rpc_server *pco_reuse_stack = NULL;
+        char *ef_name = rpc_getenv(pco_iut, "EF_NAME");
+
+        TEST_STEP("Unregister IUT interfaces for XDP with "
+                  "forced removal of zombie stacks");
+        if (!te_str_is_null_or_empty(ef_name))
+        {
+            rc = rcf_rpc_server_get(pco_iut->ta, "pco_reuse_stack",
+                                    NULL, RCF_RPC_SERVER_GET_EXISTING,
+                                    &pco_reuse_stack);
+            if (rc == 0)
+            {
+                TEST_SUBSTEP("Remove the RCF RPC server started for stack "
+                             "reuse");
+                CHECK_RC(rcf_rpc_server_destroy(pco_reuse_stack));
+                /* FIXME: remove this after OL-Bug 14171 */
+                sockts_kill_zombie_stacks_gen(pco_iut, 0);
+            }
+            else if (TE_RC_GET_ERROR(rc) != TE_ENOENT)
+            {
+                TEST_FAIL("rcf_rpc_server_get() returned unexpected error");
+            }
+        }
+        ssn_xdp_unregister(pco_iut);
     }
 
     unlink(name_p);
