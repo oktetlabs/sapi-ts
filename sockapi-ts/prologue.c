@@ -944,6 +944,162 @@ set_max_stacks_possible(rcf_rpc_server *rpcs)
 }
 
 /**
+ * Auxiliary structure to be used in the sapi_register_interfaces_for_xdp() function
+ * as a cookie.
+ */
+typedef struct ta_interfaces {
+    /** TA */
+    const char *ta;
+    /** String with interface names */
+    te_string *interfaces;
+} ta_interfaces;
+
+static te_errno
+sapi_aggr_name_get(const char *ta, const char *ifname, char **name)
+{
+    te_errno        rc;
+    unsigned int    i;
+    unsigned int    n_handles;
+    cfg_handle     *handles = NULL;
+    char           *str = NULL;
+    char           *oid_str = NULL;
+    const char     *aggr_name = NULL;
+
+    CHECK_EXPR(cfg_find_pattern_fmt(&n_handles, &handles,
+                                "/agent:%s/aggregation:*/interface:", ta));
+
+    for (i = 0; i < n_handles; i++)
+    {
+        CHECK_EXPR(cfg_get_instance(handles[i], NULL, &str));
+
+        if (strcmp(ifname, str) == 0)
+        {
+            cfg_oid *oid = NULL;
+
+            CHECK_EXPR(cfg_get_oid_str(handles[i], &oid_str));
+            oid = cfg_convert_oid_str(oid_str);
+            if (oid == NULL)
+            {
+                rc = TE_EINVAL;
+                goto cleanup;
+            }
+
+            /* "agent:<ta_name>/aggregation:<aggr_name>/interface:" */
+            aggr_name = CFG_OID_GET_INST_NAME(oid, 2);
+            *name = strdup(aggr_name);
+
+            FREE_AND_CLEAN(str);
+            FREE_AND_CLEAN(oid_str);
+            cfg_free_oid(oid);
+            break;
+        }
+        FREE_AND_CLEAN(str);
+    }
+
+    if (aggr_name == NULL)
+    {
+        ERROR("tapi_cfg_aggr_foreach_member() failed find aggregation "
+              "name for: %s", ifname);
+        rc = TE_EINVAL;
+    }
+
+cleanup:
+    free(handles);
+    free(oid_str);
+    free(str);
+
+    return rc;
+}
+
+static te_errno
+sapi_get_aggr_interfaces(const char *ta, const char *aggr_ifname,
+                         te_string *interfaces)
+{
+    te_errno        rc;
+    unsigned int    i;
+    unsigned int    n_handles;
+    cfg_handle     *handles;
+    char           *aggr_name = NULL;
+
+    CHECK_EXPR(cfg_find_pattern_fmt(&n_handles, &handles,
+                                    "/agent:%s/aggregation:%s/member:*",
+                                    ta, aggr_ifname));
+
+    for (i = 0; i < n_handles; i++)
+    {
+        char *member = NULL;
+        CHECK_EXPR(cfg_get_inst_name(handles[i], &member));
+        te_string_append(interfaces, " %s", member);
+        free(member);
+    }
+
+cleanup:
+    return rc;
+}
+
+
+/**
+ * Callback for sapi_register_interfaces_for_xdp() to count interfaces.
+ */
+static te_errno
+sapi_get_nut_interfaces(cfg_net_t *net, cfg_net_node_t *node,
+                        const char *oid_str, cfg_oid *oid, void *cookie)
+{
+    const char *ta;
+    const char *ifname;
+    ta_interfaces *ta_ifs = (ta_interfaces *)cookie;
+
+    UNUSED(net);
+
+    if (strcmp(cfg_oid_inst_subid(oid, 1), "agent") != 0 ||
+        strcmp(cfg_oid_inst_subid(oid, 2), "interface") != 0)
+    {
+        ERROR("Network node '%s' is not an interface", oid_str);
+        return TE_RC(TE_TAPI, TE_ENOENT);
+    }
+
+    ta = CFG_OID_GET_INST_NAME(oid, 1);
+    if (strcmp(ta, ta_ifs->ta) == 0 && node->type == NET_NODE_TYPE_NUT)
+    {
+        ifname = CFG_OID_GET_INST_NAME(oid, 2);
+        te_string_append(ta_ifs->interfaces, " %s", ifname);
+    }
+
+    return 0;
+}
+
+static te_errno
+sapi_register_interfaces_for_xdp(rcf_rpc_server *rpcs)
+{
+    te_errno rc;
+    te_string cmd = TE_STRING_INIT;
+    te_string interfaces = TE_STRING_INIT;
+    ta_interfaces ta_ifs = {.ta = rpcs->ta, .interfaces = &interfaces};
+    char *bond_name = getenv("SOCKAPI_TS_BOND_NAME");
+    char *xdp_flow_filters = getenv("EF_AF_XDP_ENABLE_FLOW_FILTERS");
+
+    te_string_append(&cmd, "%s --skip-none", SSN_XDP_REGISTER);
+
+    if (xdp_flow_filters != NULL && strcmp(xdp_flow_filters, "0") == 0)
+        te_string_append(&cmd, " %s", "-n1");
+
+    if (bond_name == NULL)
+        CHECK_EXPR(tapi_cfg_net_foreach_node(sapi_get_nut_interfaces, &ta_ifs));
+    else
+        CHECK_EXPR(sapi_get_aggr_interfaces(rpcs->ta, bond_name, &interfaces));
+
+    te_string_append(&cmd, " %s", interfaces.ptr);
+
+    rpc_system(rpcs, cmd.ptr);
+
+cleanup:
+    te_string_free(&cmd);
+    te_string_free(&interfaces);
+
+    return rc;
+}
+
+/**
  * Set Socket API library names for Test Agents in accordance
  * with configuration in configurator.conf.
  *
@@ -1055,6 +1211,12 @@ main(int argc, char **argv)
     TEST_GET_PCO(pco_iut);
     TEST_GET_PCO(pco_tst);
     TEST_GET_IF(iut_if);
+
+    if (branch_ssn())
+    {
+        TEST_STEP("For SSN, register IUT interfaces for XDP");
+        CHECK_RC(sapi_register_interfaces_for_xdp(pco_iut));
+    }
 
     CHECK_RC(set_max_stacks_possible(pco_iut));
 
