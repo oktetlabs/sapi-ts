@@ -159,13 +159,6 @@ check_connection(rcf_rpc_server *pco_iut, const struct if_nameindex *iut_if,
                  sockts_socket_type rt_sock_type,
                  te_bool *accel_check_fail, const char *msg)
 {
-#define CHECK_EXPR(_expr) \
-    do {                  \
-        rc = (_expr);     \
-        if (rc != 0)      \
-            goto cleanup; \
-    } while (0)
-
     sockts_if_monitor traffic_monitor = SOCKTS_IF_MONITOR_INIT;
     te_errno rc = 0;
     sockts_test_send_rc test_send_rc;
@@ -244,7 +237,6 @@ cleanup:
         RPC_CLOSE(pco_tst, tst_s);
 
     return rc;
-#undef CHECK_EXPR
 }
 
 static void
