@@ -1050,8 +1050,10 @@ static te_errno
 sapi_get_nut_interfaces(cfg_net_t *net, cfg_net_node_t *node,
                         const char *oid_str, cfg_oid *oid, void *cookie)
 {
+    te_errno rc = 0;
     const char *ta;
     const char *ifname;
+    char ancestor_ifname[IF_NAMESIZE];
     ta_interfaces *ta_ifs = (ta_interfaces *)cookie;
 
     UNUSED(net);
@@ -1067,10 +1069,14 @@ sapi_get_nut_interfaces(cfg_net_t *net, cfg_net_node_t *node,
     if (strcmp(ta, ta_ifs->ta) == 0 && node->type == NET_NODE_TYPE_NUT)
     {
         ifname = CFG_OID_GET_INST_NAME(oid, 2);
-        te_string_append(ta_ifs->interfaces, " %s", ifname);
+        CHECK_EXPR(tapi_cfg_get_if_last_ancestor(ta, ifname,
+                                                 &ancestor_ifname,
+                                                 sizeof(ancestor_ifname)));
+        te_string_append(ta_ifs->interfaces, " %s", ancestor_ifname);
     }
 
-    return 0;
+cleanup:
+    return rc;
 }
 
 static te_errno
