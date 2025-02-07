@@ -750,13 +750,20 @@ function defaults_fix()
 
 # ool/config/branch_* should be moved at the end.
 # This file takes into account all changes made by other options to
-# handle branch-depended requirements
+# handle branch-depended requirements. But there is an exception to this
+# rule for branch_ssn - it should be at the very top of the list,
+# because it exports the environment variable used in other OOL options.
 function branch_order_fix()
 {
     for i in ${ool_set} ; do
         if test "x${i/branch_}" != "x${i}" ; then
-            ool_set="${ool_set/${i}/} $i"
-            ring "branch_order_fix: move '${i}' at the end"
+            if [[ "$i" == "branch_ssn" ]] ; then
+                ool_set="$i ${ool_set/${i}/}"
+                ring "branch_order_fix: move '${i}' to the beginning"
+            else
+                ool_set="${ool_set/${i}/} $i"
+                ring "branch_order_fix: move '${i}' at the end"
+            fi
             break
         fi
     done
