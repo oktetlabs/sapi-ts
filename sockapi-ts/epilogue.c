@@ -244,16 +244,13 @@ main(int argc, char **argv)
                   "forced removal of zombie stacks");
         if (!te_str_is_null_or_empty(ef_name))
         {
-            rc = rcf_rpc_server_get(pco_iut->ta, "pco_reuse_stack",
+            rc = rcf_rpc_server_get(pco_iut->ta, PCO_REUSE_STACK,
                                     NULL, RCF_RPC_SERVER_GET_EXISTING,
                                     &pco_reuse_stack);
             if (rc == 0)
             {
-                TEST_SUBSTEP("Remove the RCF RPC server started for stack "
-                             "reuse");
+                RING("Remove the RCF RPC server started for stack reuse");
                 CHECK_RC(rcf_rpc_server_destroy(pco_reuse_stack));
-                /* FIXME: remove this after OL-Bug 14171 */
-                sockts_kill_zombie_stacks_gen(pco_iut, 0);
             }
             else if (TE_RC_GET_ERROR(rc) != TE_ENOENT)
             {
