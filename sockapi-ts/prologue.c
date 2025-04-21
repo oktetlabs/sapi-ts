@@ -291,6 +291,10 @@ copy_onload_tools(rcf_rpc_server *pco_iut)
                              "tools/ip/onload_stackdump",
                              "te_onload_stdump");
 
+            copy_onload_tool(pco_iut->ta, path, agt_dir,
+                             "tools/af_xdp/ssn_xdp_register",
+                             "ssn_xdp_register");
+
             /*
              * ulhepler build profile requires onload_helper tool
              * in the path
@@ -1218,6 +1222,7 @@ main(int argc, char **argv)
     TEST_GET_PCO(pco_tst);
     TEST_GET_IF(iut_if);
 
+    copy_onload_tools(pco_iut);
     if (branch_ssn())
     {
         TEST_STEP("For SSN, register IUT interfaces for XDP");
@@ -1267,7 +1272,6 @@ main(int argc, char **argv)
     }
 
     libts_timestamps_configure_sfptpd();
-    copy_onload_tools(pco_iut);
 
     /*
      * Flush neighbours tables in all hosts to
