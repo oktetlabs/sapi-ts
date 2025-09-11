@@ -59,6 +59,8 @@ def add_meta(name, value):
                 build = "cloud"
             elif ef[1] == "build_ulhelper":
                 build = "ulhelper"
+            elif ef[1] == "build_pkt4k":
+                build = "pkt4k"
             add_meta(ef[0], ef[1])
         if not build:
             build = "default"
