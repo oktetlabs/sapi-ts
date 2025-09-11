@@ -733,6 +733,10 @@ function af_xdp_fix()
         # zc_af_xdp should be used only with AF_XDP
         ool_remove "zc_af_xdp" \
             "$info: zc_af_xdp should be used only with af_xdp*"
+
+        if ool_contains "build_pkt4k"; then
+            ool_remove "build_pkt4k" "pkt4k is supported by SSN only"
+        fi
     fi
 }
 
