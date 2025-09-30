@@ -2668,7 +2668,7 @@
                 <value>25000</value>
             </arg>
             <arg name="ef_max_rx_packets">
-                <value>500000</value>
+                <value>32768</value>
             </arg>
             <arg name="accept" type="boolean"/>
             <arg name="one_stack" type="boolean" list="">
