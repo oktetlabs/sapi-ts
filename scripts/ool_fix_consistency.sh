@@ -214,8 +214,18 @@ function ssn_fix()
         ool_contains "branch_ssn" || ool_add "branch_ssn" "$info"
 
         if ! ool_contains "af_xdp" && ! ool_contains "af_xdp_no_filters" ; then
-            ool_add "af_xdp" "$info"
+            ool_contains "build_cloud" && ool_add "af_xdp_no_filters" "$info" || ool_add "af_xdp" "$info"
         fi
+    fi
+}
+
+function build_cloud_fix()
+{
+    local info="cloud_fix"
+    if ool_contains "build_cloud" ; then
+        ool_contains "branch_ssn" || ool_add "branch_ssn" "$info"
+        ool_contains "af_xdp" && ool_remove "af_xdp" "$info"
+        ool_contains "af_xdp_no_filters" || ool_add "af_xdp_no_filters" "$info"
     fi
 }
 
@@ -803,6 +813,7 @@ function cplane_server_grace_timeout_zero_fix() {
 ool_contains "no_reuse_pco" || ool_add "reuse_pco" "set reuse_pco by default"
 
 ssn_fix
+build_cloud_fix
 zf_shim_fix
 syscall_fix
 ef100soc_fix
