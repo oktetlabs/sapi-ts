@@ -20,7 +20,7 @@ sockts_recv_by_zc_recv(rcf_rpc_server *rpcs, int s,
 {
 #define MSGS_NUM SOCKTS_RECV_BY_ZC_RECV_MAX_MSGS
 #define BUFS_PER_MSG 5
-#define BUF_LEN 3000
+#define BUF_LEN 4096
     char                bufs[MSGS_NUM][BUFS_PER_MSG][BUF_LEN];
     rpc_iovec           vectors[MSGS_NUM][BUFS_PER_MSG];
     int                 i;
