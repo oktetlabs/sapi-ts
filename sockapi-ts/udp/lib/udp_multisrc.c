@@ -22,7 +22,7 @@
 #define MAX_IOVS 20
 
 /** Length of an iovec buffer */
-#define IOV_LEN 2000
+#define IOV_LEN 4096
 
 /** Maximum length of the datagram */
 #define MAX_PAYLOAD_LEN 20000
