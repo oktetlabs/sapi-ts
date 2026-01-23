@@ -97,7 +97,6 @@ main(int argc, char *argv[])
     uint8_t                 tx_buf[TST_BUF_LEN] = { 0, };
     uint8_t                 rx_buf[TST_BUF_LEN] = { 0, };
     int                     sent;
-    int                     rcv;
 
     TEST_START;
     TEST_GET_PCO(pco_iut);

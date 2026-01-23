@@ -83,7 +83,6 @@ main(int argc, char *argv[])
     int cpu_mask[] = {1};
     /* This value should match to cpu_mask value */
     const char *ef_periodic_timer_cpu = "1";
-    cfg_handle af_xdp_kick_batch_hdl = CFG_HANDLE_INVALID;
 
     TEST_START;
     TEST_GET_PCO(pco_iut);
