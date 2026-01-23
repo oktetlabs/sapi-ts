@@ -1074,7 +1074,7 @@ sapi_get_nut_interfaces(cfg_net_t *net, cfg_net_node_t *node,
     {
         ifname = CFG_OID_GET_INST_NAME(oid, 2);
         CHECK_EXPR(tapi_cfg_get_if_last_ancestor(ta, ifname,
-                                                 &ancestor_ifname,
+                                                 ancestor_ifname,
                                                  sizeof(ancestor_ifname)));
         te_string_append(ta_ifs->interfaces, " %s", ancestor_ifname);
     }
