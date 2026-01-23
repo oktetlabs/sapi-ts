@@ -964,63 +964,6 @@ typedef struct ta_interfaces {
 } ta_interfaces;
 
 static te_errno
-sapi_aggr_name_get(const char *ta, const char *ifname, char **name)
-{
-    te_errno        rc;
-    unsigned int    i;
-    unsigned int    n_handles;
-    cfg_handle     *handles = NULL;
-    char           *str = NULL;
-    char           *oid_str = NULL;
-    const char     *aggr_name = NULL;
-
-    CHECK_EXPR(cfg_find_pattern_fmt(&n_handles, &handles,
-                                "/agent:%s/aggregation:*/interface:", ta));
-
-    for (i = 0; i < n_handles; i++)
-    {
-        CHECK_EXPR(cfg_get_instance(handles[i], NULL, &str));
-
-        if (strcmp(ifname, str) == 0)
-        {
-            cfg_oid *oid = NULL;
-
-            CHECK_EXPR(cfg_get_oid_str(handles[i], &oid_str));
-            oid = cfg_convert_oid_str(oid_str);
-            if (oid == NULL)
-            {
-                rc = TE_EINVAL;
-                goto cleanup;
-            }
-
-            /* "agent:<ta_name>/aggregation:<aggr_name>/interface:" */
-            aggr_name = CFG_OID_GET_INST_NAME(oid, 2);
-            *name = strdup(aggr_name);
-
-            FREE_AND_CLEAN(str);
-            FREE_AND_CLEAN(oid_str);
-            cfg_free_oid(oid);
-            break;
-        }
-        FREE_AND_CLEAN(str);
-    }
-
-    if (aggr_name == NULL)
-    {
-        ERROR("tapi_cfg_aggr_foreach_member() failed find aggregation "
-              "name for: %s", ifname);
-        rc = TE_EINVAL;
-    }
-
-cleanup:
-    free(handles);
-    free(oid_str);
-    free(str);
-
-    return rc;
-}
-
-static te_errno
 sapi_get_aggr_interfaces(const char *ta, const char *aggr_ifname,
                          te_string *interfaces)
 {
@@ -1028,7 +971,6 @@ sapi_get_aggr_interfaces(const char *ta, const char *aggr_ifname,
     unsigned int    i;
     unsigned int    n_handles;
     cfg_handle     *handles;
-    char           *aggr_name = NULL;
 
     CHECK_EXPR(cfg_find_pattern_fmt(&n_handles, &handles,
                                     "/agent:%s/aggregation:%s/member:*",
