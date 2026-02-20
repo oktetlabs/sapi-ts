@@ -26,7 +26,7 @@
 #include "sockapi-test.h"
 
 #define BUFF_SIZE     1024
-#define PKT_BUFF_SIZE 2000
+#define PKT_BUFF_SIZE 4096
 
 #define SET_CHECK_PIPE_SIZE(_pco, _pipe_fd, _size, _overfill_fd,          \
                             _read_fd, _init_size)                         \
@@ -95,13 +95,21 @@ do {                                                                      \
             }                                                             \
             else                                                          \
             {                                                             \
-                if (pipe_data_len > 0.8 * new_size && !report_small)      \
+                if (new_size < PKT_BUFF_SIZE)                             \
+                {                                                         \
+                    ERROR("new_size=%d < PKT_BUFF_SIZE=%d",               \
+                          new_size, PKT_BUFF_SIZE);                       \
+                    TEST_VERDICT("Internal error: new pipe size is "      \
+                                 "too small");                            \
+                }                                                         \
+                if (pipe_data_len > new_size - PKT_BUFF_SIZE &&           \
+                    !report_small)                                        \
                 {                                                         \
                     RING_VERDICT("Amount of data in the pipe is a "       \
                                  "little bit smaller then pipe size");    \
                     report_small = TRUE;                                  \
                 }                                                         \
-                if (pipe_data_len < 0.8 * new_size)                       \
+                if (pipe_data_len < new_size - PKT_BUFF_SIZE)             \
                     TEST_VERDICT("Amount of data in the pipe is much "    \
                                  "smaller then pipe size");               \
             }                                                             \
