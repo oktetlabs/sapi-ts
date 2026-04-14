@@ -45,6 +45,12 @@
  * second end of the pipe won't become readable. */
 #define PIPE_NO_WRITABLE 1500
 
+/*
+ * The value should be large enough for the test to end successfully
+ * even with the pkt4k profile.
+ */
+#define TOTAL_DATA_SIZE 5120
+
 int
 main(int argc, char *argv[])
 {
@@ -65,7 +71,6 @@ main(int argc, char *argv[])
     te_bool             is_wrt = FALSE;
     int                 counter = 0;
 
-    long int            page_size = 0;
     int                 max_tries;
 
     rpc_recv_f          recv_f;
@@ -79,12 +84,7 @@ main(int argc, char *argv[])
     TEST_GET_RECV_FUNC(recv_f);
     TEST_GET_SEND_FUNC(send_f);
 
-    RPC_AWAIT_IUT_ERROR(pco_iut);
-    page_size = rpc_sysconf(pco_iut, RPC_SC_PAGESIZE);
-    if (page_size < 0)
-        TEST_VERDICT("Failed to get memory page size on IUT");
-
-    max_tries = (page_size / data_size) + 1;
+    max_tries = (TOTAL_DATA_SIZE / data_size) + 1;
     rpc_pipe(pco_iut, pipefds);
     write_end = pipefds[1];
     read_end = pipefds[0];
@@ -124,7 +124,7 @@ main(int argc, char *argv[])
                      "size of page bytes were read from the pipe");
     else if (PIPE_NO_WRITABLE > data_size * counter)
         RING_VERDICT("Pipe became writable too early.");
-    else if (page_size <= data_size * (counter - 1))
+    else if (TOTAL_DATA_SIZE <= data_size * (counter - 1))
         TEST_VERDICT("Pipe became writable too late.");
 
     data_size = data_size * counter / 2;
