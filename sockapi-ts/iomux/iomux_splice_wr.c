@@ -25,7 +25,11 @@
 #include "extensions.h"
 #include "iomux.h"
 
-#define DATA_LEN 4096
+/*
+ * The value should be large enough for the test to end successfully
+ * even with the pkt4k profile.
+ */
+#define DATA_LEN 8192
 
 int
 main(int argc, char *argv[])
