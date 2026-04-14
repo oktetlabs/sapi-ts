@@ -226,6 +226,10 @@ function build_cloud_fix()
         ool_contains "branch_ssn" || ool_add "branch_ssn" "$info"
         ool_contains "af_xdp" && ool_remove "af_xdp" "$info"
         ool_contains "af_xdp_no_filters" || ool_add "af_xdp_no_filters" "$info"
+
+        ool_contains "tcp_shared_ports" && ool_remove "tcp_shared_ports" "${info}/Bug-14746"
+        # socket_cache_fix() forcibly uses tcp_shared_ports
+        ool_contains "socket_cache" && ool_remove "socket_cache" "${info}/Bug-14746"
     fi
 }
 
