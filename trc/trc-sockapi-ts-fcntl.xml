@@ -733,10 +733,15 @@
         <arg name="read_after">TRUE</arg>
         <arg name="read_before">FALSE</arg>
         <notes/>
-        <results tags="v5" key="ON-5240">
+        <results tags="v5&amp;!build_pkt4k" key="ON-5240">
           <result value="PASSED">
             <verdict>Pipe size is a little bit bigger then EF_PIPE_SIZE value</verdict>
             <verdict>Amount of data in the pipe is a little bit smaller then pipe size</verdict>
+          </result>
+        </results>
+        <results tags="v5&amp;build_pkt4k">
+          <result value="PASSED">
+            <verdict>Pipe size is a little bit bigger then EF_PIPE_SIZE value</verdict>
           </result>
         </results>
       </iter>
@@ -771,10 +776,15 @@
         <arg name="read_after">TRUE</arg>
         <arg name="read_before"/>
         <notes/>
-        <results tags="v5" key="ON-5240">
+        <results tags="v5&amp;!build_pkt4k" key="ON-5240">
           <result value="PASSED">
             <verdict>Pipe size is a little bit bigger then EF_PIPE_SIZE value</verdict>
             <verdict>Amount of data in the pipe is a little bit smaller then pipe size</verdict>
+          </result>
+        </results>
+        <results tags="v5&amp;build_pkt4k">
+          <result value="PASSED">
+            <verdict>Pipe size is a little bit bigger then EF_PIPE_SIZE value</verdict>
           </result>
         </results>
       </iter>
@@ -790,10 +800,15 @@
         <arg name="read_after">TRUE</arg>
         <arg name="read_before"/>
         <notes/>
-        <results tags="v5" key="ON-5240">
+        <results tags="v5&amp;!build_pkt4k" key="ON-5240">
           <result value="PASSED">
             <verdict>Pipe size is a little bit bigger then EF_PIPE_SIZE value</verdict>
             <verdict>Amount of data in the pipe is a little bit smaller then pipe size</verdict>
+          </result>
+        </results>
+        <results tags="v5&amp;build_pkt4k">
+          <result value="PASSED">
+            <verdict>Pipe size is a little bit bigger then EF_PIPE_SIZE value</verdict>
           </result>
         </results>
       </iter>
@@ -828,10 +843,15 @@
         <arg name="read_after"/>
         <arg name="read_before">TRUE</arg>
         <notes/>
-        <results tags="v5" key="ON-5240">
+        <results tags="v5&amp;!build_pkt4k" key="ON-5240">
           <result value="PASSED">
             <verdict>Pipe size is a little bit bigger then EF_PIPE_SIZE value</verdict>
             <verdict>Amount of data in the pipe is a little bit smaller then pipe size</verdict>
+          </result>
+        </results>
+        <results tags="v5&amp;build_pkt4k">
+          <result value="PASSED">
+            <verdict>Pipe size is a little bit bigger then EF_PIPE_SIZE value</verdict>
           </result>
         </results>
       </iter>
@@ -1139,7 +1159,7 @@
         <arg name="read_after">FALSE</arg>
         <arg name="read_before">TRUE</arg>
         <notes/>
-        <results tags="v5" key="ON-5240">
+        <results tags="v5&amp;!build_pkt4k" key="ON-5240">
           <result value="PASSED">
             <verdict>Amount of data in the pipe is a little bit smaller then pipe size</verdict>
           </result>
@@ -1157,7 +1177,7 @@
         <arg name="read_after"/>
         <arg name="read_before">TRUE</arg>
         <notes/>
-        <results tags="v5" key="ON-5240">
+        <results tags="v5&amp;!build_pkt4k" key="ON-5240">
           <result value="PASSED">
             <verdict>Amount of data in the pipe is a little bit smaller then pipe size</verdict>
           </result>
@@ -1175,7 +1195,7 @@
         <arg name="read_after">TRUE</arg>
         <arg name="read_before"/>
         <notes/>
-        <results tags="v5" key="ON-5240">
+        <results tags="v5&amp;!build_pkt4k" key="ON-5240">
           <result value="PASSED">
             <verdict>Amount of data in the pipe is a little bit smaller then pipe size</verdict>
           </result>
