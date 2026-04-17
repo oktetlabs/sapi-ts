@@ -403,7 +403,7 @@
             <arg name="env" ref="env.iut_only"/>
             <arg name="new_ef_pipe_size">
                 <value>0</value>
-                <value reqs="ONLOAD_ONLY">8192</value>
+                <value reqs="ONLOAD_ONLY,NO_BUILD_PKT4K">8192</value>
                 <value reqs="ONLOAD_ONLY">1000000</value>
             </arg>
             <arg name="fcntl_size1">

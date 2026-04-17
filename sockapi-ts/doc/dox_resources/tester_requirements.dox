@@ -275,6 +275,8 @@ should be fixed):
 @table_2c_second Tests which enable @c EF_VFORK_MODE=2 mode
 @table_2c_first NO_AF_XDP
 @table_2c_second Tests and iterations which are incompatible with AF_XDP.
+@table_2c_first NO_BUILD_PKT4K
+@table_2c_second Tests and iterations which are incompatible with NO_BUILD_PKT4K
 
 @table_2c_section Network configuration requirements:
 @table_2c_first ENV-2LINKS-IUT
