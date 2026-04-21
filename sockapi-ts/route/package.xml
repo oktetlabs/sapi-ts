@@ -22,7 +22,7 @@
         <enum name="rule_criterion">
             <value>from</value>
             <value>to</value>
-            <value>tos</value>
+            <value reqs="IP_TOS">tos</value>
         </enum>
 
         <!-- TOS rules do not work for IPv6 Traffic Class well, see
@@ -529,6 +529,7 @@
                 <req id="ROUTE_POLICY"/>
                 <req id="NETNS_CALICO"/>
                 <req id="IF_DOWN_UP"/>
+                <req id="IP_TOS"/>
             </script>
             <arg name="env" type="env.two_ifs_variants_with_ipv6">
                 <value ref="env.two_nets.iut_first"/>
@@ -1477,6 +1478,7 @@
         <run>
             <script name="rt_switched_tos">
                 <req id="ROUTE_POLICY"/>
+                <req id="IP_TOS"/>
                 <!-- Disabled for night testing: see ON-11117 -->
                 <!-- req id="NETNS_CALICO"/-->
             </script>
