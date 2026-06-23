@@ -214,7 +214,7 @@ function ssn_fix()
         ool_contains "branch_ssn" || ool_add "branch_ssn" "$info"
 
         if ! ool_contains "af_xdp" && ! ool_contains "af_xdp_no_filters" ; then
-            ool_contains "build_cloud" && ool_add "af_xdp_no_filters" "$info" || ool_add "af_xdp" "$info"
+            ool_add "af_xdp" "$info"
         fi
     fi
 }
@@ -224,8 +224,6 @@ function build_cloud_fix()
     local info="cloud_fix"
     if ool_contains "build_cloud" ; then
         ool_contains "branch_ssn" || ool_add "branch_ssn" "$info"
-        ool_contains "af_xdp" && ool_remove "af_xdp" "$info"
-        ool_contains "af_xdp_no_filters" || ool_add "af_xdp_no_filters" "$info"
 
         ool_contains "tcp_shared_ports" && ool_remove "tcp_shared_ports" "${info}/Bug-14746"
         # socket_cache_fix() forcibly uses tcp_shared_ports
