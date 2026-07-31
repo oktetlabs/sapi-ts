@@ -371,3 +371,8 @@ if ! ${ST_IUT_IS_CMOD} ; then
         check_fw_var_consistency
     fi
 fi
+
+if [[ "${IUT_KERNEL_VERSION/debug/}" != "${IUT_KERNEL_VERSION}" ]] ; then
+    echo "RING: Bug-13356: use --tester-req=!NO_LOOP4_M32 on debug kernel ($IUT_KERNEL_VERSION)" >&2
+    TE_EXTRA_OPTS="${TE_EXTRA_OPTS} --tester-req=!NO_LOOP4_M32"
+fi
